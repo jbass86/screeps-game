@@ -1,0 +1,31 @@
+{
+  "name": "screeps-game",
+  "version": "0.0.1",
+  "description": "My Screeps Colony",
+  "main": "none",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbass86/screeps-game.git"
+  },
+  "keywords": [
+    "screeps"
+  ],
+  "author": "Josh Bass",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jbass86/screeps-game/issues"
+  },
+  "homepage": "https://github.com/jbass86/screeps-game#readme",
+  "devDependencies": {
+    "grunt": "^1.0.4",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-screeps": "^1.4.0"
+  },
+  "dependencies": {
+    "grunt-contrib-clean": "^2.0.0"
+  }
+}
