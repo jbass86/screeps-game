@@ -21,7 +21,7 @@ module.exports = class HarvesterRole extends BaseRole {
                 }
             });
             
-            if(targets.length === 0) {
+            if(targets.length === OK) {
                 //Theres nowhere to put the energy...
                 return false;
             }
