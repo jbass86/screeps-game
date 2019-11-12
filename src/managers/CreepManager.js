@@ -2,9 +2,9 @@
 
 //explorer? defender? 
 const roleConfig = {
-    "harvester": {name: "Harvester", role: "harvester", numToHave : 4, parts: [WORK, CARRY, MOVE]},
+    "harvester": {name: "Harvester", role: "harvester", numToHave : 6, parts: [WORK, CARRY, MOVE]},
     "upgrader": {name: "Upgrader", role: "upgrader", numToHave : 2, parts: [WORK, CARRY, MOVE]},
-    "builder": {name: "Builder", role: "builder", numToHave : 4, parts: [WORK, CARRY, MOVE]},
+    "builder": {name: "Builder", role: ["builder", "upgrader"], numToHave : 4, parts: [WORK, CARRY, MOVE]},
     "maintainer": {name: "Maintainer", role: ["maintainer", "harvester"], numToHave : 2, parts: [WORK, CARRY, MOVE]}
 }
 

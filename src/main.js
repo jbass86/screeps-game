@@ -1,5 +1,5 @@
 //Bass Screeps
-//Another comment
+//Main Entry point of my screeps colony management.
 
 "use strict";
 
@@ -28,7 +28,6 @@ const roleMap = {
     "builder": builder,
     "maintainer": maintainer
 }
-
 
 class MainApp {
     

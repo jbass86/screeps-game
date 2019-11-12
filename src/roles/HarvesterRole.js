@@ -26,9 +26,16 @@ module.exports = class HarvesterRole extends BaseRole {
                 return false;
             }
             
-            if(creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            const transferSuccess = creep.transfer(targets[0], RESOURCE_ENERGY)
+            
+            if (transferSuccess != OK) {
+               
+                console.log(transferSuccess);
+                if(transferSuccess === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                }
             }
+         
         }
         
         return true;
