@@ -22,14 +22,7 @@ module.exports = {
         }
         else
         {
-			var source = creep.pos.findClosestByPath(FIND_SOURCES, { filter: (s) => s.energy > 0 });
-            if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {maxRooms:1});
-            }
-            if(creep.carry.energy == creep.carryCapacity)
-            {
-                creep.memory.working = true;
-            }
+            creep.GatherEnergy();
         }
     }
 };

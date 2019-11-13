@@ -18,7 +18,6 @@ module.exports = {
             if(constructionSite != undefined)
             {
                 if(creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
-                    //console.log(creep.name + " moving from " + creep.pos + " to " + constructionSite.pos);
                     creep.moveTo(constructionSite, {maxRooms:1});
                 }
                 if(creep.carry.energy == 0)
@@ -33,15 +32,7 @@ module.exports = {
         }
         else
         {
-			var source = creep.pos.findClosestByPath(FIND_SOURCES, { filter: (s) => s.energy > 0 });
-            //console.log(creep.name + " found source at " + source.energyCapacity);
-            if( source != undefined && creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {maxRooms:1});
-            }
-            if(creep.carry.energy == creep.carryCapacity)
-            {
-                creep.memory.working = true;
-            }
+            creep.GatherEnergy();
         }
     }
 

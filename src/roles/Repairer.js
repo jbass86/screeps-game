@@ -17,7 +17,6 @@ module.exports = {
             var structures = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (s) => s.hits < s.hitsMax && s.structureType != STRUCTURE_WALL
             });
-            //console.log(creep.name + " is going from " + creep.pos + " to repair road at " + structures.pos);
             if(structures != undefined)
             {
                 if(creep.memory.target == undefined)
@@ -39,29 +38,12 @@ module.exports = {
             }
             else
             {
-                var structures = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (s) => s.structureType == STRUCTURE_STORAGE
-                });
-                if(structures != undefined)
-                {
-                    console.log("transfering to storage");
-                    if(creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(structure, {maxRooms:1});
-                    }
-                }
-                //builder.run(creep);
+                builder.run(creep);
             }
         }
         else
         {
-			var source = creep.pos.findClosestByPath(FIND_SOURCES, { filter: (s) => s.energy > 0 });
-            if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {maxRooms:1});
-            }
-            if(creep.carry.energy == creep.carryCapacity)
-            {
-                creep.memory.working = true;
-            }
+            creep.GatherEnergy();
         }
     }
 

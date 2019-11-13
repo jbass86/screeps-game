@@ -12,14 +12,12 @@ module.exports = {
         //creep.say("Transporter!");
         if(creep.memory.working) 
 		{
-			console.log("Gotta move it now!");
 			var structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
 				filter: (s) => (s.structureType == STRUCTURE_STORAGE)
 					&& s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
             });
             if(structure != undefined)
             {
-                //console.log(creep.name + " " + creep.transfer(structure, RESOURCE_ENERGY) + " into " + structure.structureType + " with id " + structure.id);
                 if(creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(structure, {maxRooms:1});
                 }
@@ -31,7 +29,6 @@ module.exports = {
         }
         else
 		{
-			console.log("gotta collect!");
             var source = undefined;
             if(creep.memory.hasOwnProperty("container"))
             {
@@ -45,10 +42,8 @@ module.exports = {
 							Memory.containers[s.id] == undefined ||
 							Memory.containers[s.id].transporter == false)
 				});
-
-				console.log(source);
+				
 				creep.memory.container = source.id;
-				console.log("Check memory!");
 				if (Memory["containers"] == undefined) {
 					Memory.containers = {};
 				}
@@ -61,7 +56,6 @@ module.exports = {
 				}
 				
             }
-			console.log(creep.withdraw(source, RESOURCE_ENERGY));
 			if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(source, {maxRooms:1});
 			}
