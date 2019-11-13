@@ -29,37 +29,51 @@ module.exports = {
         }
         else
 		{
+            var withdrawResult;
             var source = undefined;
-            if(creep.memory.hasOwnProperty("container"))
-            {
-                 source = Game.getObjectById(creep.memory.container);
-            }
-            else
-			{
-				source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-					filter: (s) => s.structureType == STRUCTURE_CONTAINER &&
-						(Memory["containers"] == undefined ||
-							Memory.containers[s.id] == undefined ||
-							Memory.containers[s.id].transporter == false)
-				});
-				
-				creep.memory.container = source.id;
-				if (Memory["containers"] == undefined) {
-					Memory.containers = {};
-				}
+            source = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+                filter: (s) => s.resourceType = RESOURCE_ENERGY && s.amount > creep.store.getCapacity(RESOURCE_ENERGY)
+            });
+            if(source == undefined){
+                if(creep.memory.hasOwnProperty("container"))
+                {
+                    source = Game.getObjectById(creep.memory.container);
+                }
+                else
+                {
+                    source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                        filter: (s) => s.structureType == STRUCTURE_CONTAINER &&
+                            (Memory["containers"] == undefined ||
+                                Memory.containers[s.id] == undefined ||
+                                Memory.containers[s.id].transporter == false)
+                    });
+                    
+                    creep.memory.container = source.id;
+                    if (Memory["containers"] == undefined) {
+                        Memory.containers = {};
+                    }
 
-				if (Memory.containers[source.id] == undefined) {
-					Memory.containers[source.id] = { miner: false, transporter: true };
-				}
-				else {
-					Memory.containers[source.id].transporter = true;
-				}
-				
+                    if (Memory.containers[source.id] == undefined) {
+                        Memory.containers[source.id] = { miner: false, transporter: true };
+                    }
+                    else {
+                        Memory.containers[source.id].transporter = true;
+                    }
+                    
+                }
+                withdrawResult = creep.withdraw(source, RESOURCE_ENERGY);
+                if (withdrawResult == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source, {maxRooms:1});
+                }
             }
-			if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {maxRooms:1});
-			}
-			if (creep.carry.energy == creep.carryCapacity || (Game.getObjectById(creep.memory.container).store.getUsedCapacity(RESOURCE_ENERGY) == 0 && creep.carry.energy > 0))
+            else {
+                withdrawResult = creep.pickup(source);
+                if (withdrawResult == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source, {maxRooms:1});
+                }
+
+            }
+            if (creep.carry.energy == creep.carryCapacity || withdrawResult == OK)
             {
                 creep.memory.working = true;
             }

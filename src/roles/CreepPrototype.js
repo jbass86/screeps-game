@@ -11,8 +11,7 @@ module.exports = function () {
 	Creep.prototype.GatherEnergy =
 		function () {
 			var energyStructure = this.pos.findClosestByPath(FIND_STRUCTURES, {
-				filter: (s) => (s.structureType == STRUCTURE_STORAGE)
-					&& s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+				filter: (s) => (s.structureType == STRUCTURE_STORAGE && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0)
 			});
 
             if (energyStructure != undefined) {
