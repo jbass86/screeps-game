@@ -6,7 +6,7 @@ module.exports = class MaintainerRole extends BaseRole {
         super();
     }
 
-    run(creep) {
+    run(creep, role) {
 
         if (creep.memory.canRepair) {
 
@@ -15,7 +15,7 @@ module.exports = class MaintainerRole extends BaseRole {
                 if (!creep.memory.repairTarget) {
 
                     const damagedStructure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                        filter: (s) => s.hits < s.hitsMax && s.structureType != STRUCTURE_WALL
+                        filter: (s) => s.hits < s.hitsMax && (role === "wallguy" ? s.structureType === STRUCTURE_WALL : s.structureType !== STRUCTURE_WALL)
                     });
 
                     if (damagedStructure) {
@@ -29,7 +29,7 @@ module.exports = class MaintainerRole extends BaseRole {
                 const damagedStructure = Game.getObjectById(creep.memory.repairTarget);
                 let repairSuccess = creep.repair(damagedStructure);
                 if (repairSuccess !== OK) {
-                    if(creep.repair(damagedStructure) == ERR_NOT_IN_RANGE) {
+                    if(repairSuccess === ERR_NOT_IN_RANGE) {
                         creep.moveTo(damagedStructure, {maxRooms:1});
                     } else {
                         //Something else is wrong just drop the repair target

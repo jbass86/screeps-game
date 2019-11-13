@@ -29,6 +29,13 @@ const roleConfig = {
         numToHave : 2, 
         parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3
+    },
+    "wallguy": {
+        name: "WallGuy", 
+        role: ["wallguy", "upgrader"], 
+        numToHave : 1, 
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        minParts: 3
     }
 };
 
@@ -92,7 +99,7 @@ module.exports = class CreepManager {
                 console.log(`Successfully spawned ${newName} with role ${role.role} and parts ${parts}`);
                 break;
             } else if (success === ERR_NOT_ENOUGH_ENERGY){
-                console.log(`Not enough enery to make parts ${parts} try again with one less part`);
+                console.log(`Not enough enery to make ${newName} with parts [${parts}] try again with one less part`);
                 parts.pop();
             } else {
                 console.log("I couldn't spawn creep with role " + role.role + " because of code " + success);
