@@ -7,6 +7,7 @@ const credentials = require("./credentials.json");
 const del = require("del");
 const flatten = require("gulp-flatten");
 const gulpScreeps = require("gulp-screeps");
+const eslint = require("gulp-eslint");
 
 function clean(cb) {
     (async () => {
@@ -16,9 +17,12 @@ function clean(cb) {
     })();
 };
 
+function lint(cb) {
+    return src("src/**/*.js").pipe(eslint({fix: true, rules: {strict: 2}})).pipe(eslint.format()).pipe(eslint.failAfterError());
+}
+
 function copy(cb) {
-    src("src/**/*.js").pipe(flatten()).pipe(dest("dist/"));
-    cb();
+    return src("src/**/*.js").pipe(flatten()).pipe(dest("dist/"));
 };
 
 function screeps(cb) {
@@ -28,12 +32,13 @@ function screeps(cb) {
         branch: "default",
         ptr: false
     };
-    src("src/**/*.js").pipe(flatten()).pipe(dest("dist/")).pipe(gulpScreeps(options));
-    cb();
+    //src("src/**/*.js").pipe(flatten()).pipe(dest("dist/")).pipe(gulpScreeps(options));
+    return src("dist/*.js").pipe(gulpScreeps(options));
 };
 
 exports.clean = clean;
+exports.lint = lint;
 exports.copy = copy;
 exports.screeps = screeps;
-exports.build = series(clean, copy);
-exports.deploy = series(clean, screeps);
+exports.build = series(clean, lint, copy);
+exports.deploy = series(clean, lint, copy, screeps);

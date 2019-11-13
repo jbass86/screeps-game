@@ -2,17 +2,39 @@
 
 //explorer? defender? 
 const roleConfig = {
-    "harvester": {name: "Harvester", role: "harvester", numToHave : 6, parts: [WORK, CARRY, MOVE]},
-    "upgrader": {name: "Upgrader", role: "upgrader", numToHave : 2, parts: [WORK, CARRY, MOVE]},
-    "builder": {name: "Builder", role: ["builder", "upgrader"], numToHave : 4, parts: [WORK, CARRY, MOVE]},
-    "maintainer": {name: "Maintainer", role: ["maintainer", "harvester"], numToHave : 2, parts: [WORK, CARRY, MOVE]}
-}
+    "harvester": {
+        name: "Harvester", 
+        role: ["harvester", "upgrader"], 
+        numToHave : 6, 
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        minParts: 3
+    },
+    "upgrader": {
+        name: "Upgrader", 
+        role: "upgrader", 
+        numToHave : 2, 
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        minParts: 3
+    },
+    "builder": {
+        name: "Builder", 
+        role: ["builder", "upgrader"], 
+        numToHave : 4, 
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        minParts: 3
+    },
+    "maintainer": {
+        name: "Maintainer", 
+        role: ["maintainer", "harvester", "upgrader"], 
+        numToHave : 2, 
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        minParts: 3
+    }
+};
 
 module.exports = class CreepManager {
 
-    constructor() {
-        
-    }
+    constructor() {}
     
     cullCreepMemory() {
         
@@ -57,13 +79,27 @@ module.exports = class CreepManager {
     createCreep(spawn, role) {
         
         const newName = this.createCreepName(role.name)
-        const success = spawn.spawnCreep(role.parts, newName);
+        let parts = [...role.parts];
+
+        let success = false;
+
+        while (parts.length > role.minParts) {
+
+            success = spawn.spawnCreep(parts, newName);
                 
-        if (success === OK) {
-            Game.creeps[newName].memory.role = role.role;
-        } else {
-            console.log("I couldn't spawn creep with role " + role.role + " because of code " + success);
+            if (success === OK) {
+                Game.creeps[newName].memory.role = role.role;
+                console.log(`Successfully spawned ${newName} with role ${role.role} and parts ${parts}`);
+                break;
+            } else if (success === ERR_NOT_ENOUGH_ENERGY){
+                console.log(`Not enough enery to make parts ${parts} try again with one less part`);
+                parts.pop();
+            } else {
+                console.log("I couldn't spawn creep with role " + role.role + " because of code " + success);
+                break;
+            }
         }
+      
         return success;
     }
     

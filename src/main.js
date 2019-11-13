@@ -1,8 +1,6 @@
 //Bass Screeps
 //Main Entry point of my screeps colony management.
 
-"use strict";
-
 const Friends = {
     "Kpow": {name: "Kpow", status: "closeFriend"}
 };
@@ -32,8 +30,10 @@ const roleMap = {
 class MainApp {
     
     handleCreepManagement() {
-        manager.cullCreepMemory();
-        manager.replenishCreeps(manager.createCreepRoleMap());
+        if (Game.time % 60 === 0){
+            manager.cullCreepMemory();
+            manager.replenishCreeps(manager.createCreepRoleMap());
+        }
     }
     
     loop() {
