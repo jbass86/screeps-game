@@ -1,7 +1,7 @@
 //Bass Screeps
 //Main Entry point of my screeps colony management.
 
-const Friends = {
+global.Friends = {
     "Kpow": {name: "Kpow", status: "closeFriend"}
 };
 

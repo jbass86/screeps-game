@@ -12,8 +12,7 @@ module.exports = class BaseRole {
             if (!creep.memory.gatherTarget) {
                 creep.memory.gatherTarget = {
                     index: Math.abs(Math.round(Math.random() * (sources.length - 1))), 
-                    elapsedTicks: 0
-                    
+                    elapsedTicks: 0 
                 };
             }
             
@@ -31,8 +30,7 @@ module.exports = class BaseRole {
                     delete creep.memory.gatherTarget;
                 }
             }
-            
-            
+    
             return true;
         } else {
             delete creep.memory.gatherTarget;

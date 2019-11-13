@@ -14,16 +14,32 @@ module.exports = class MaintainerRole extends BaseRole {
 
                 if (!creep.memory.repairTarget) {
 
-                    const damagedStructure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                        filter: (s) => s.hits < s.hitsMax && (role === "wallguy" ? s.structureType === STRUCTURE_WALL : s.structureType !== STRUCTURE_WALL)
-                    });
+                      
+                    if (role === "wallguy") {
+                        let damagedWalls = creep.room.find(FIND_STRUCTURES, {
+                            filter: (struct) => struct.hits < struct.hitsMax && s.structureType === STRUCTURE_WALL
+                        });
 
-                    if (damagedStructure) {
-                        creep.memory.repairTarget = damagedStructure.id;
+                        if (damagedWalls && damagedWalls.length > 0) {
+                            damagedWalls.sort((a, b) => a.hits - b.hits);
+                            creep.memory.repairTarget = damagedWalls[0].id;
+                        } else {
+                            //Walls are ok...
+                            return false;
+                        }
+
                     } else {
-                        //There is no structure to repair so we cannot perform this role...
-                        return false;
-                    }
+                        const damagedStructure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                            filter: (struct) => struct.hits < struct.hitsMax && s.structureType !== STRUCTURE_WALL
+                        });
+
+                        if (damagedStructure) {
+                            creep.memory.repairTarget = damagedStructure.id;
+                        } else {
+                            //There is no structure to repair so we cannot perform this role...
+                            return false;
+                        }
+                    }        
                 }
 
                 const damagedStructure = Game.getObjectById(creep.memory.repairTarget);
