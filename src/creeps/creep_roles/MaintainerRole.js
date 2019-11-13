@@ -17,7 +17,7 @@ module.exports = class MaintainerRole extends BaseRole {
                       
                     if (role === "wallguy") {
                         let damagedWalls = creep.room.find(FIND_STRUCTURES, {
-                            filter: (struct) => struct.hits < struct.hitsMax && s.structureType === STRUCTURE_WALL
+                            filter: (struct) => struct.hits < struct.hitsMax && struct.structureType === STRUCTURE_WALL
                         });
 
                         if (damagedWalls && damagedWalls.length > 0) {
@@ -30,7 +30,7 @@ module.exports = class MaintainerRole extends BaseRole {
 
                     } else {
                         const damagedStructure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                            filter: (struct) => struct.hits < struct.hitsMax && s.structureType !== STRUCTURE_WALL
+                            filter: (struct) => struct.hits < struct.hitsMax && struct.structureType !== STRUCTURE_WALL
                         });
 
                         if (damagedStructure) {
@@ -58,6 +58,8 @@ module.exports = class MaintainerRole extends BaseRole {
                     }
                 }
             } else {
+                //we want wallguy to work on walls evenly
+                role === "wallguy" ? delete creep.memory.repairTarget : null;
                 creep.memory.canRepair = false;
             }
 
