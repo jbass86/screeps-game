@@ -64,6 +64,9 @@ module.exports.loop = function () {
         {
             tower.attack(target);
         }
+        //else {
+          //  var dmgWall = tower.pos.findClosestByRange(STRUCTURE_WALL)
+        //}
     }
     
     var minHarvesters = 2;
@@ -115,8 +118,8 @@ module.exports.loop = function () {
 		bodySequence = [WORK,WORK,WORK,WORK,WORK,MOVE];
         energy = 550;
         energyPerSequence = 550;
-	}
-    else
+    }
+    else if (numUpgrader < maxUpgrader)
     {
         role = 'upgrader';
     }

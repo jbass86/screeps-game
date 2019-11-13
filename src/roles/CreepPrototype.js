@@ -23,5 +23,5 @@ module.exports = function () {
             if (this.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
                 this.memory.working = true;
             }
-		}
+        }
 };
