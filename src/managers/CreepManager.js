@@ -5,7 +5,7 @@ const roleConfig = {
     "harvester": {
         name: "Harvester", 
         role: ["harvester", "upgrader"], 
-        numToHave : 6, 
+        numToHave : 3, 
         parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3
     },
@@ -19,7 +19,7 @@ const roleConfig = {
     "builder": {
         name: "Builder", 
         role: ["builder", "upgrader"], 
-        numToHave : 4, 
+        numToHave : 3, 
         parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3
     },
@@ -70,17 +70,21 @@ module.exports = class CreepManager {
     
     replenishCreeps(availableCreeps) {
 
-        for (let spawn of Object.values(Game.spawns)) {
-            for (let role of Object.values(roleConfig)) {
-                if (!availableCreeps[role.role] || availableCreeps[role.role] < role.numToHave) {
-                    let createSuccess = this.createCreep(spawn, role);
-                    if (createSuccess === ERR_BUSY) {
-                        return;
+        for (let spawn of Object.values(Game.spawns)) {       
+            (() => {
+                let roles = Object.keys(roleConfig);
+                roles.sort((a, b) => availableCreeps[a] - availableCreeps[b]);
+                for (let roleName of roles) {
+                    let role = roleConfig[roleName];
+                    if (!availableCreeps[role.role] || availableCreeps[role.role] < role.numToHave) {
+                        let createSuccess = this.createCreep(spawn, role);
+                        if (createSuccess === OK || createSuccess === ERR_BUSY) {
+                            return;
+                        }
                     }
                 }
-            }
+            })();
         }
-        
     }
     
     createCreep(spawn, role) {
@@ -90,7 +94,7 @@ module.exports = class CreepManager {
 
         let success = false;
 
-        while (parts.length > role.minParts) {
+        while (parts.length >= role.minParts) {
 
             success = spawn.spawnCreep(parts, newName);
                 
@@ -99,7 +103,7 @@ module.exports = class CreepManager {
                 console.log(`Successfully spawned ${newName} with role ${role.role} and parts ${parts}`);
                 break;
             } else if (success === ERR_NOT_ENOUGH_ENERGY){
-                console.log(`Not enough enery to make ${newName} with parts [${parts}] try again with one less part`);
+                console.log(`Not enough enery to make ${newName} with parts [${parts}]`);
                 parts.pop();
             } else {
                 console.log("I couldn't spawn creep with role " + role.role + " because of code " + success);
