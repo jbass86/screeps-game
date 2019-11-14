@@ -1,3 +1,5 @@
+//A Miner role for drop mining on top of a container.  This role should not have any CARRY parts...
+
 "use strict";
 
 //Harvester Roule
@@ -16,8 +18,11 @@ module.exports = class HarvesterRole extends BaseRole {
 
     cullContainers() {
         for (let entry of Object.entries(Memory.usedContainers)) {
-            if (Game.creeps[Memory.usedContainers[entry[1]]] !== "INVALID" && !Game.creeps[Memory.usedContainers[entry[1]]]) {
-                Memory.usedContainers[entry[0]] = false;
+            if (entry[1] && entry[1] !== "INVALID") {    
+                const creepLives = Game.creeps[entry[1]];
+                if (!creepLives){
+                    Memory.usedContainers[entry[0]] = false;
+                }
             }
         }
     }
@@ -28,7 +33,7 @@ module.exports = class HarvesterRole extends BaseRole {
 
         if (!creep.memory.mineTarget) {
             let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (struct) => !Memory.usedContainers[struct.id]
+                filter: (struct) => struct.structureType === STRUCTURE_CONTAINER && !Memory.usedContainers[struct.id]
             });
 
             if (container) {

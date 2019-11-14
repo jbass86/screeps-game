@@ -48,6 +48,8 @@ module.exports = class HarvesterRole extends BaseRole {
             } else {
                 if(transferSuccess === ERR_NOT_IN_RANGE) {
                     creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                } else {
+                    delete creep.memory.transferTarget;
                 }
             }
         }
