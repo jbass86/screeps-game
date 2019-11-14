@@ -41,7 +41,7 @@ const roleConfig = {
     "miner": {
         name: "Miner", 
         role: "miner", 
-        numToHave : 1, 
+        numToHave : 2, 
         parts: [MOVE, WORK, WORK, WORK, WORK],
         minParts: 3
     }

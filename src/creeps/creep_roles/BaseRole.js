@@ -48,7 +48,7 @@ module.exports = class BaseRole {
                 } else if (gatherSuccess === ERR_NOT_ENOUGH_RESOURCES){
                     //Its empty find something else...
                     delete creep.memory.gatherTarget
-                    return;
+                    return true;
                 } else {
                     //Some other error...
                     console.log("Some other error" + gatherSuccess);

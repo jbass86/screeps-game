@@ -37,7 +37,6 @@ module.exports = class HarvesterRole extends BaseRole {
               
                 targets.sort((a, b) => priorities[a.structureType] > priorities[b.structureType]);
                 creep.memory.transferTarget = targets[0].id;
-                creep.say("T " + targets[0].name);
             } 
             
             const target = Game.getObjectById(creep.memory.transferTarget);
