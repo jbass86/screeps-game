@@ -35,7 +35,7 @@ module.exports = class HarvesterRole extends BaseRole {
                     return false;
                 }  
               
-                targets.sort((a, b) => priorities[a.structureType] < priorities[b.structureType]);
+                targets.sort((a, b) => priorities[a.structureType] > priorities[b.structureType]);
                 creep.memory.transferTarget = targets[0].id;
                 creep.say("T " + targets[0].name);
             } 

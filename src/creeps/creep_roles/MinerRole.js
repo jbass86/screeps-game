@@ -32,7 +32,7 @@ module.exports = class HarvesterRole extends BaseRole {
             });
 
             if (container) {
-                Game.memory.usedContainers[container.id] = creep.name;
+                Memory.usedContainers[container.id] = creep.name;
                 creep.memory.mineTarget = {
                     containerId: container.id
                 };
@@ -41,18 +41,21 @@ module.exports = class HarvesterRole extends BaseRole {
                 return false;
             }
         } else {
-            let container = Game.getObjectById(creep.memory.mineTarget.conotainerId);
+            let container = Game.getObjectById(creep.memory.mineTarget.containerId);
 
             if (creep.pos.x === container.pos.x && creep.pos.y === container.pos.y) {
                 if (!creep.memory.energySourceId) {
                     //The closest energy should be right next to this container if we can drop mine it.
-                    let source = creep.pos.findClosestByPath(RESOURCE_ENERGY);
+                    let source = creep.pos.findClosestByPath(FIND_SOURCES);
                     let testHarvest = creep.harvest(source)
                     if (testHarvest === OK) {
                         creep.memory.mineTarget.energySourceId = source.id;
                     } else if (testHarvest === ERR_NOT_IN_RANGE) {
                         //The closest source isnt withing distance to drop mind this container, we cant drop mine from it...
                         Memory.usedContainers[container.id] = "INVALID";
+                        delete creep.memory.mineTarget;
+                    } else {
+                        //Something else went wrong
                         delete creep.memory.mineTarget;
                     }
                 } else {
