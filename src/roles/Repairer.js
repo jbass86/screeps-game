@@ -11,7 +11,7 @@ var builder = require('Builder');
 
 module.exports = {
     run(creep) {
-        creep.say("Repairer!");
+        //creep.say("Repairer!");
         if(creep.memory.working)
         {
             var structures = creep.pos.findClosestByPath(FIND_STRUCTURES, {

@@ -27,10 +27,17 @@ module.exports = {
                 }
                 else {
                     var dmgWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (w) => (w.structureType == STRUCTURE_WALL ||
-                                        w.structureType == STRUCTURE_RAMPART) &&
-                                        w.hits < w.hitsMax*0.00001
+                        filter: (w) => (w.structureType == STRUCTURE_RAMPART) &&
+                                        w.hits < 12000
                     });
+                    if(!dmgWall)
+                    {
+                        dmgWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                            filter: (w) => (w.structureType == STRUCTURE_WALL ||
+                                            w.structureType == STRUCTURE_RAMPART) &&
+                                            w.hits < 12000
+                        });
+                    }
                     tower.repair(dmgWall);
                 }
             }
