@@ -32,6 +32,7 @@ module.exports = class HarvesterRole extends BaseRole {
             });
 
             if (container) {
+                Game.memory.usedContainers[container.id] = creep.name;
                 creep.memory.mineTarget = {
                     containerId: container.id
                 };
@@ -51,7 +52,7 @@ module.exports = class HarvesterRole extends BaseRole {
                         creep.memory.mineTarget.energySourceId = source.id;
                     } else if (testHarvest === ERR_NOT_IN_RANGE) {
                         //The closest source isnt withing distance to drop mind this container, we cant drop mine from it...
-                        Memory.usedContainers[container.id] === "INVALID";
+                        Memory.usedContainers[container.id] = "INVALID";
                         delete creep.memory.mineTarget;
                     }
                 } else {
