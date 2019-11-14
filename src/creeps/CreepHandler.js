@@ -1,3 +1,4 @@
+"use strict";
 
 const CreepManager = require("CreepManager");
 const manager = new CreepManager();
@@ -14,12 +15,16 @@ const builder = new BuilderRole();
 const MaintainerRole = require("MaintainerRole");
 const maintainer = new MaintainerRole();
 
+const MinerRole = require("MinerRole");
+const miner = new MinerRole();
+
 const roleMap = {
     "harvester": harvester,
     "upgrader": upgrader,
     "builder": builder,
     "maintainer": maintainer,
-    "wallguy": maintainer
+    "wallguy": maintainer,
+    "miner": miner
 }
 
 module.exports = class CreepHandler {

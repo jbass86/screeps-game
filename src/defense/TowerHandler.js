@@ -1,3 +1,4 @@
+"use strict";
 
 const CreepKiller = require("CreepKiller");
 const killer = new CreepKiller();

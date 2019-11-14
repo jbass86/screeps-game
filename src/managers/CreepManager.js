@@ -1,4 +1,4 @@
-
+"use strict";
 
 //explorer? defender? 
 const roleConfig = {
@@ -35,6 +35,14 @@ const roleConfig = {
         role: ["wallguy", "upgrader"], 
         numToHave : 1, 
         parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        minParts: 3
+    },
+
+    "miner": {
+        name: "Miner", 
+        role: "miner", 
+        numToHave : 1, 
+        parts: [MOVE, WORK, WORK, WORK, WORK],
         minParts: 3
     }
 };

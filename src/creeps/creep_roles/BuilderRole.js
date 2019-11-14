@@ -1,3 +1,5 @@
+"use strict";
+
 //Builder Routine
 
 const BaseRole = require("BaseRole");

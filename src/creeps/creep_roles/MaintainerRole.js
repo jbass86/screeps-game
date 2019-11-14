@@ -1,3 +1,5 @@
+"use strict";
+
 const BaseRole = require("BaseRole");
 
 module.exports = class MaintainerRole extends BaseRole {

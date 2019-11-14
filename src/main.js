@@ -1,3 +1,5 @@
+"use strict";
+
 //Bass Screeps
 //Main Entry point of my screeps colony management.
 

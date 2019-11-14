@@ -23,6 +23,7 @@
     "@types/lodash": "^4.14.146",
     "@types/screeps": "^2.5.5",
     "del": "^5.1.0",
+    "eslint-plugin-screeps": "^2.0.0",
     "gulp": "^4.0.2",
     "gulp-eslint": "^6.0.0",
     "gulp-flatten": "^0.4.0",

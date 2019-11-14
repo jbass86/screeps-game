@@ -1,8 +1,16 @@
-{
+{ 
     "parserOptions": {
         "ecmaVersion": 6
     },
+    "extends": "eslint:recommended",
     "rules": {
         "semi": "error"
+    },
+    "plugins": [
+        "screeps"
+    ],
+    "env": {
+        "node": true,
+        "screeps/screeps": true
     }
 }
