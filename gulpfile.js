@@ -40,5 +40,5 @@ exports.clean = clean;
 exports.lint = lint;
 exports.copy = copy;
 exports.screeps = screeps;
-exports.build = series(clean, lint, copy);
-exports.deploy = series(clean, lint, copy, screeps);
+exports.build = series(parallel(clean, lint), copy);
+exports.deploy = series(parallel(clean, lint), copy, screeps);
