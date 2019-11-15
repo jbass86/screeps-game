@@ -12,8 +12,8 @@ module.exports = {
         //creep.say("Upgrader!");
         if(creep.memory.working)
         {
-            if(creep.upgradeController(Game.spawns.Spawn1.room.controller, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.spawns.Spawn1.room.controller, {maxRooms:1});
+            if(creep.upgradeController(creep.room.controller, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller, {maxRooms:1});
             }
             if(creep.carry.energy == 0)
             {

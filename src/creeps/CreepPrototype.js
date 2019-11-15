@@ -23,4 +23,14 @@ module.exports = function () {
                 this.memory.working = true;
             }
         }
+
+    Creep.prototype.HarvestEnergy =
+        function () {
+            var source = this.pos.findClosestByPath(FIND_SOURCES);
+            if (source) {
+                if (this.harvest(source) == ERR_NOT_IN_RANGE) {
+                    this.moveTo(source, { maxRooms: 1 });
+                }
+            }
+        }
 };
