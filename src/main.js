@@ -4,7 +4,8 @@
 //Main Entry point of my screeps colony management.
 
 global.Friends = {
-    "Kpow": {name: "Kpow", status: "closeFriend"}
+    "Kpow": {name: "Kpow", status: "closeFriend"},
+    "Nate954": {name: "Nate954", status: "closeFriend"}
 };
 
 const CreepHandler = require("CreepHandler");

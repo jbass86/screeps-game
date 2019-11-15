@@ -3,7 +3,10 @@
 const CreepKiller = require("CreepKiller");
 const killer = new CreepKiller();
 
-const towerRoles = [killer];
+const TowerRepairman = require("TowerRepairman");
+const repair = new TowerRepairman();
+
+const towerRoles = [killer, repair];
 
 module.exports = class TowerHandler {
 
