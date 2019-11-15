@@ -2,10 +2,17 @@
 
 //explorer? defender? 
 const roleConfig = {
+    "miner": {
+        name: "Miner", 
+        role: "miner", 
+        numToHave : 2, 
+        parts: [MOVE, WORK, WORK, WORK, WORK],
+        minParts: 3
+    },
     "harvester": {
         name: "Harvester", 
         role: ["harvester", "upgrader"], 
-        numToHave : 3, 
+        numToHave : 4, 
         parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3
     },
@@ -37,14 +44,6 @@ const roleConfig = {
         parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3
     },
-
-    "miner": {
-        name: "Miner", 
-        role: "miner", 
-        numToHave : 2, 
-        parts: [MOVE, WORK, WORK, WORK, WORK],
-        minParts: 3
-    }
 };
 
 module.exports = class CreepManager {
