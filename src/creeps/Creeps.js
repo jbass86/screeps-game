@@ -6,6 +6,7 @@ var transporter = require('Transporter');
 var miner = require('Miner');
 var linkMiner = require('LinkMiner');
 var longRangeHarvester = require('LongRangeHarvester');
+var reserver = require('Reserver');
 
 module.exports = {
     runCreeps() {
@@ -38,6 +39,9 @@ module.exports = {
             }
             else if (creep.memory.role == "longRangeHarvester") {
                 longRangeHarvester.run(creep);
+            }
+            else if (creep.memory.role == "reserver") {
+                reserver.run(creep);
             }
         }
     }

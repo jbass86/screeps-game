@@ -1,6 +1,7 @@
 
 const Friends = {
-    jbass86: {name: "jbass86", status: "closeFriend"}
+    jbass86: {name: "jbass86", status: "closeFriend"},
+    Nate954: {name: "Nate954", status: "closeFriend"}
  };
 module.exports = {
     run(){
@@ -28,14 +29,14 @@ module.exports = {
                 else {
                     var dmgWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
                         filter: (w) => (w.structureType == STRUCTURE_RAMPART) &&
-                                        w.hits < 12000
+                                        w.hits < 50000
                     });
                     if(!dmgWall)
                     {
                         dmgWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
                             filter: (w) => (w.structureType == STRUCTURE_WALL ||
                                             w.structureType == STRUCTURE_RAMPART) &&
-                                            w.hits < 12000
+                                            w.hits < 50000
                         });
                     }
                     tower.repair(dmgWall);

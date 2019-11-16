@@ -22,15 +22,15 @@ module.exports = function() {
     StructureSpawn.prototype.createEmergencyCreep = 
         function(numHarvesters, numMiners, numLinkMiners, numTransporters) {
             var transportSources = this.room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_CONTAINER ||
-                                                                                                 s.structureType == STRUCTURE_LINK
+                                                                                   s.structureType == STRUCTURE_LINK
             });
             
             var transportableEnergy = 0;
-            for(let source in transportSources) {
-                transportableEnergy += source.store.getUsedCapacity(RESOURCE_ENERGY);
+            for(let source of transportSources) {
+                transportableEnergy += source.store.getUsedCapacity();
             }
                                                                                                  
-            var spawnableEnergy = this.room.energyAvailable;
+            var spawnableEnergy = Math.max(this.room.energyAvailable, 300);
             var harvestableEnergy = spawnableEnergy + this.room.storage.store.getUsedCapacity(RESOURCE_ENERGY);
             transportableEnergy += harvestableEnergy;
             if(numHarvesters == 0)

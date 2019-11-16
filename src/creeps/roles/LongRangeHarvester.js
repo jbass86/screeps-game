@@ -11,12 +11,7 @@ module.exports = {
     run(creep) {
         //creep.say("LongRangeHarvester!");
         
-        if (creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0 && !creep.memory.working) {
-            creep.memory.working = true;
-        }
-        else if(creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0 && creep.memory.working){
-            creep.memory.working = false;
-        }
+        creep.CheckState();
 
         if(!creep.memory["home"]){
             creep.memory.home = creep.room.storage.id;

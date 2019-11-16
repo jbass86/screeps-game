@@ -23,14 +23,15 @@ module.exports.loop = function () {
     creeps.runCreeps();    
     tower.run();
     
-    var minHarvesters = 2;
+    var minHarvesters = 1;
 	var minBuilders = 2;
 	var minRepairer = 1;
 	var minTransporters = 1;
 	var minMiners = 1;
 	var minLinkMiners = 1;
-    var maxUpgrader = 2;
+    var maxUpgrader = 1;
     var minLrHarvester = 1;
+    var minReserver = 1;
     var numHarvesters = _.sum(Game.creeps, (c) => c.memory.role == 'harvester');
 	var numBuilders = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
 	var numRepairer = _.sum(Game.creeps, (c) => c.memory.role == 'repairer');
@@ -39,6 +40,7 @@ module.exports.loop = function () {
 	var numLinkMiners = _.sum(Game.creeps, (c) => c.memory.role == 'linkMiner');
     var numUpgrader = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
     var numLrHarvester = _.sum(Game.creeps, (c) => c.memory.role == 'longRangeHarvester');
+    var numReserver = _.sum(Game.creeps, (c) => c.memory.role == 'reserver');
 
     Game.spawns["Spawn1"].room.visual.text("Harvesters: " + numHarvesters + " / " + minHarvesters, 4, 6, {color: numHarvesters < minHarvesters ? "#ff3333" : "#ffffff"});
     Game.spawns["Spawn1"].room.visual.text("TowerTransports: " + numRepairer + " / " + minRepairer, 4, 7, {color: numRepairer < minRepairer ? "#ff3333" : "#ffffff"});
@@ -48,6 +50,7 @@ module.exports.loop = function () {
     Game.spawns["Spawn1"].room.visual.text("LinkMiners: " + numLinkMiners + " / " + minLinkMiners, 4, 11, {color: numLinkMiners < minLinkMiners ? "#ff3333" : "#ffffff"});
     Game.spawns["Spawn1"].room.visual.text("Upgraders: " + numUpgrader + " / " + maxUpgrader, 4, 12, {color: numUpgrader < maxUpgrader ? "#ff3333" : "#ffffff"});
     Game.spawns["Spawn1"].room.visual.text("LrHarvester: " + numLrHarvester + " / " + minLrHarvester, 4, 13, {color: numLrHarvester < minLrHarvester ? "#ff3333" : "#ffffff"});
+    Game.spawns["Spawn1"].room.visual.text("Reserver: " + numReserver + " / " + minReserver, 4, 14, {color: numReserver < minReserver ? "#ff3333" : "#ffffff"});
     var role = undefined
     var energy = Game.spawns.Spawn1.room.energyCapacityAvailable;
     var energyPerSequence = 200;
@@ -78,6 +81,19 @@ module.exports.loop = function () {
         energyPerSequence = 700;
 		energy = 700;
     }
+    else if (numLrHarvester < minLrHarvester)
+    {
+        role = 'longRangeHarvester';
+        bodySequence = [WORK, CARRY,CARRY,MOVE,MOVE, MOVE];
+        energyPerSequence = 350;
+    }
+    else if (numReserver < minReserver)
+    {
+        role = 'reserver';
+        bodySequence = [CLAIM, MOVE];
+        energyPerSequence = 650;
+        energy = 650;
+    }
 	else if (numRepairer < minRepairer) {
 		role = 'repairer';
         bodySequence = [CARRY, CARRY, MOVE];
@@ -91,12 +107,6 @@ module.exports.loop = function () {
     else if (numUpgrader < maxUpgrader)
     {
         role = 'upgrader';
-    }
-    else if (numLrHarvester < minLrHarvester)
-    {
-        role = 'longRangeHarvester';
-        bodySequence = [WORK, CARRY,CARRY,MOVE,MOVE, MOVE];
-        energyPerSequence = 350;
     }
     
     if(role)

@@ -10,6 +10,7 @@
 module.exports = {
     run(creep) {
         //creep.say("Upgrader!");
+        creep.CheckState();
         if(creep.memory.working)
         {
             if(creep.upgradeController(creep.room.controller, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -22,7 +23,7 @@ module.exports = {
         }
         else
         {
-            creep.GatherEnergy();
+            creep.WithdrawEnergy([STRUCTURE_STORAGE]);
         }
     }
 };
