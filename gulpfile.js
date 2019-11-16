@@ -2,12 +2,24 @@
 
 const { src, dest, parallel, series } = require('gulp');
 
-const credentials = require("./credentials.json");
-
 const del = require("del");
 const flatten = require("gulp-flatten");
 const gulpScreeps = require("gulp-screeps");
 const eslint = require("gulp-eslint");
+
+let credentials;
+try {
+    credentials = require("./credentials.json");
+} catch (err) {
+    console.error(
+        "-----------------------WARNING--------------------------\n",
+        "It appears that your crendentials.json couldnt be loaded\n", 
+        "You cannot publish to the screeps server without it \n",
+        "and therefore the 'gulp deploy' job will fail...\n",
+        "Create the file in this format {'apiKey': <YOUR API KEY>}\n",
+        "-----------------------------------------------------------"
+    );
+}
 
 function clean(cb) {
     (async () => {
@@ -26,6 +38,12 @@ function copy(cb) {
 };
 
 function screeps(cb) {
+
+    if (!credentials) {
+        console.log("No credentials cant run...");
+        cb();
+        return false;
+    }
 
     const options = {
         token: credentials.apiKey,

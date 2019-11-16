@@ -49,6 +49,7 @@ module.exports = class DynamicCreepConfig {
 
 
     generateConfig(room) {
-        
+        console.log(room);
+        console.log(roleConfig);
     }
 }
