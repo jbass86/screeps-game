@@ -1,8 +1,5 @@
 
-const Friends = {
-    jbass86: {name: "jbass86", status: "closeFriend"},
-    Nate954: {name: "Nate954", status: "closeFriend"}
- };
+
 module.exports = {
     run(){
         var towers = Game.rooms.E39S33.find(FIND_STRUCTURES, {
@@ -11,7 +8,7 @@ module.exports = {
         for(let tower of towers)
         {
             var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
-                filter: (t) => Friends[t.owner.username] == undefined
+                filter: (t) => global.Friends[t.owner.username] == undefined
             });
             if(target != undefined)
             {

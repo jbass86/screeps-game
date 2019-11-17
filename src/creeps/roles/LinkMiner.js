@@ -12,11 +12,9 @@ module.exports = {
         var source = undefined;
         var transferLink = undefined;
         if(!creep.memory["source"]){
-            console.log("Get source now!");
             var links = creep.room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK});
             for(let link in links){
                 source = links[link].pos.findInRange(FIND_SOURCES, 2)[0];
-                console.log("Source is " +source);
                 if(source){
                     Memory.transferLinks = Memory.transferLinks || {};
                     Memory.transferLinks[links[link].id] = true;
@@ -42,7 +40,6 @@ module.exports = {
         var targetLink = transferLink.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK &&
                                                                                s.store.getFreeCapacity(RESOURCE_ENERGY) > 100 &&
                                                                                !Memory.transferLinks[s.id]});
-        //console.log(targetLink)
         transferLink.transferEnergy(targetLink);
     }
 };

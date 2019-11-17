@@ -16,7 +16,7 @@ module.exports = function() {
             {
                 body = body.concat(bodySequence);
             }
-            return this.createCreep(body, undefined, {role: roleName, working: false});
+            return this.createCreep(body, undefined, {role: roleName, working: false, homeRoom: this.room.name});
         }
 
     StructureSpawn.prototype.createEmergencyCreep = 

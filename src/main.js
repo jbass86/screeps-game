@@ -1,8 +1,24 @@
 require('SpawnPrototype')();
 var creeps = require('Creeps');
 var tower = require('Tower');
+var rooms = require('Rooms');
 
+global.Friends = {
+    jbass86: {name: "jbass86", status: "closeFriend"},
+    Nate954: {name: "Nate954", status: "closeFriend"}
+ };
 
+global.RoleInfo = {
+    Harvester: {name: "harvester", bodySequence: [CARRY,CARRY,MOVE], max: {E39S33: 1}, segments: 3, crossRoom: false},
+    Transporter: {name: "transporter", bodySequence: [CARRY,CARRY,MOVE], max: {E39S33: 1}, segments: 3, crossRoom: false},
+    Miner: {name: "miner", bodySequence:[WORK,WORK,WORK,WORK,WORK,MOVE,MOVE,MOVE], max: {E39S33: 1}, segments: 3, crossRoom: false},
+    LinkMiner: {name: "linkMiner", bodySequence: [WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE], max: {E39S33: 1}, segments: 3, crossRoom: false},
+    LongRangeHarvester: {name: "longRangeHarvester", bodySequence: [WORK, CARRY,CARRY,MOVE,MOVE, MOVE], max: {E39S33: 1}, segments: 3, crossRoom: true},
+    Reserver: {name: "reserver", bodySequence:  [CLAIM, MOVE], max: {E39S33: 1}, segments: 3, crossRoom: true},
+    Repairer: {name: "repairer", bodySequence: [CARRY,CARRY,MOVE], max: {E39S33: 1}, segments: 3, crossRoom: false},
+    Builder: {name: "builder", bodySequence: [WORK, CARRY, MOVE], max: {E39S33: 2}, segments: 0, crossRoom: false},
+    Upgrader: {name: "upgrader", bodySequence: [WORK, CARRY, MOVE], max: {E39S33: 1}, segments: 3, crossRoom: false}
+}
 module.exports.loop = function () {
     for (let name in Memory.creeps)
     {
@@ -22,6 +38,7 @@ module.exports.loop = function () {
 
     creeps.runCreeps();    
     tower.run();
+    rooms.run();
     
     var minHarvesters = 1;
 	var minBuilders = 2;
@@ -42,15 +59,6 @@ module.exports.loop = function () {
     var numLrHarvester = _.sum(Game.creeps, (c) => c.memory.role == 'longRangeHarvester');
     var numReserver = _.sum(Game.creeps, (c) => c.memory.role == 'reserver');
 
-    Game.spawns["Spawn1"].room.visual.text("Harvesters: " + numHarvesters + " / " + minHarvesters, 4, 6, {color: numHarvesters < minHarvesters ? "#ff3333" : "#ffffff"});
-    Game.spawns["Spawn1"].room.visual.text("TowerTransports: " + numRepairer + " / " + minRepairer, 4, 7, {color: numRepairer < minRepairer ? "#ff3333" : "#ffffff"});
-    Game.spawns["Spawn1"].room.visual.text("Builders: " + numBuilders + " / " + minBuilders, 4, 8, {color: numBuilders < minBuilders ? "#ff3333" : "#ffffff"});
-    Game.spawns["Spawn1"].room.visual.text("Miners: " + numMiners + " / " + minMiners, 4, 9, {color: numMiners < minMiners ? "#ff3333" : "#ffffff"});
-    Game.spawns["Spawn1"].room.visual.text("Transporters: " + numTransporters + " / " + minTransporters, 4, 10, {color: numTransporters < minTransporters ? "#ff3333" : "#ffffff"});
-    Game.spawns["Spawn1"].room.visual.text("LinkMiners: " + numLinkMiners + " / " + minLinkMiners, 4, 11, {color: numLinkMiners < minLinkMiners ? "#ff3333" : "#ffffff"});
-    Game.spawns["Spawn1"].room.visual.text("Upgraders: " + numUpgrader + " / " + maxUpgrader, 4, 12, {color: numUpgrader < maxUpgrader ? "#ff3333" : "#ffffff"});
-    Game.spawns["Spawn1"].room.visual.text("LrHarvester: " + numLrHarvester + " / " + minLrHarvester, 4, 13, {color: numLrHarvester < minLrHarvester ? "#ff3333" : "#ffffff"});
-    Game.spawns["Spawn1"].room.visual.text("Reserver: " + numReserver + " / " + minReserver, 4, 14, {color: numReserver < minReserver ? "#ff3333" : "#ffffff"});
     var role = undefined
     var energy = Game.spawns.Spawn1.room.energyCapacityAvailable;
     var energyPerSequence = 200;
@@ -72,7 +80,7 @@ module.exports.loop = function () {
 		role = 'miner';
 		bodySequence = [WORK,WORK,WORK,WORK,WORK,MOVE,MOVE,MOVE];
         energy = 550;
-        energyPerSequence = 550;
+        energyPerSequence = 650;
     }
     else if (numLinkMiners < minLinkMiners)
     {
