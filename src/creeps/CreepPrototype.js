@@ -49,7 +49,9 @@ module.exports = function () {
                 if( this.pickup(dropped) == ERR_NOT_IN_RANGE) {
                     this.moveTo(dropped);
                 }
+                return true;
             }
+            return false;
         }
 
     Creep.prototype.HarvestEnergy =

@@ -24,11 +24,20 @@ module.exports = {
             }
             else
             {
-                upgrader.run(creep);
+                let constructionSiteKeys = Object.keys(Game.constructionSites)
+                if(creep.memory.crossRoom && constructionSiteKeys.length > 0){
+                    creep.moveTo(Game.constructionSites[constructionSiteKeys[0]]);
+                }
+                else {
+                    upgrader.run(creep);
+                }
             }
         }
         else
         {
+            if(creep.room.name != creep.memory.homeRoom){
+                creep.moveTo(Game.rooms[creep.memory.homeRoom].storage);
+            }
             creep.WithdrawEnergy([STRUCTURE_STORAGE]);
         }
     }

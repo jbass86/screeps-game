@@ -18,8 +18,10 @@ module.exports = {
         }
         else
 		{
-            creep.PickupEnergy(20);
-            creep.WithdrawEnergy([STRUCTURE_CONTAINER, STRUCTURE_LINK], creep.store.getFreeCapacity());
+            let pickup = creep.PickupEnergy(20);
+            if(!pickup){
+                creep.WithdrawEnergy([STRUCTURE_CONTAINER, STRUCTURE_LINK], creep.store.getFreeCapacity());
+            }
         }
     }
 
