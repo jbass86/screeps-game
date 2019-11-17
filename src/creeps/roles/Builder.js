@@ -35,10 +35,10 @@ module.exports = {
         }
         else
         {
-            if(creep.room.name != creep.memory.homeRoom){
+            if(creep.room.name != creep.memory.homeRoom && !creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES)){
                 creep.moveTo(Game.rooms[creep.memory.homeRoom].storage);
             }
-            creep.WithdrawEnergy([STRUCTURE_STORAGE]);
+            creep.WithdrawEnergy(undefined, creep.store.getFreeCapacity(RESOURCE_ENERGY));
         }
     }
 

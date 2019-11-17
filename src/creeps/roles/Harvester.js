@@ -15,7 +15,7 @@ module.exports = {
             creep.TransferEnergy([STRUCTURE_SPAWN, STRUCTURE_EXTENSION]);
         }
         else {
-            creep.WithdrawEnergy([STRUCTURE_STORAGE]);
+            creep.WithdrawEnergy(undefined, creep.store.getFreeCapacity(RESOURCE_ENERGY));
         }
            
     }

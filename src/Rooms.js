@@ -1,6 +1,6 @@
 
 module.exports = {
-    checkSpawnCreeps(myRoom, roleInfo){
+    checkSpawnCreeps(myRoom, roleInfo, isEmergency){
         let roomSpawns = _.filter(Game.spawns, function (s) {return s.room.name == myRoom.name && !s.spawning});
         let name = undefined;
         let createdCreep = false;
@@ -9,7 +9,7 @@ module.exports = {
             let roleObj = roleInfo[currentRole];
             var numRole = _.sum(Game.creeps, (c) => c.memory.role == roleObj.name && c.memory.homeRoom == myRoom.name);
 
-            if(numRole < roleObj.roomInfo[myRoom.name].max){
+            if(numRole < roleObj.roomInfo[myRoom.name].max || roleObj.roomInfo[myRoom.name].max == -1 ){
                 for(let roomSpawn of roomSpawns) {
                     segmentCost = 0;
                     for(let part of roleObj.bodySequence)
@@ -19,6 +19,9 @@ module.exports = {
                     var energy = myRoom.energyCapacityAvailable;
                     if(roleObj.roomInfo[myRoom.name].segments > 0){
                         energy = roleObj.roomInfo[myRoom.name].segments * segmentCost;
+                    }
+                    if(isEmergency){
+                        energy = Math.min(energy, myRoom.energyAvailable);
                     }
                     name = roomSpawn.createCustomCreep(energy, roleObj.name, roleObj.bodySequence, segmentCost, roleObj.crossRoom);
                     if(typeof name == 'string'){
@@ -44,12 +47,12 @@ module.exports = {
         let myRooms = _.filter(Game.rooms, function(r) {return (r.controller.owner && r.controller.owner.username == "Kpow")})
 
         for(let myRoom of myRooms){
-            let printPos = 6;
+            let printPos = 39;
             for(let currentRole in global.RoleInfo)
             {
                 let roleObj = global.RoleInfo[currentRole];
                 var numRole = _.sum(Game.creeps, (c) => c.memory.role == roleObj.name && c.memory.homeRoom == myRoom.name);
-                myRoom.visual.text(currentRole + ": " + numRole + " / " + roleObj.roomInfo[myRoom.name].max, 4, printPos, 
+                myRoom.visual.text(currentRole + ": " + numRole + " / " + roleObj.roomInfo[myRoom.name].max, 43, printPos, 
                                 {color: numRole < roleObj.roomInfo[myRoom.name].max ? "#ff3333" : "#ffffff"});
                 printPos++;
             }
@@ -60,11 +63,10 @@ module.exports = {
                 let checkEmergencyRoles = false;
                 for(let currentRole in global.EmergencyRoleInfo){
                     let roleObj = global.EmergencyRoleInfo[currentRole];
-                    var numRole = _.sum(Game.creeps, (c) => c.memory.role == roleObj.name && c.memory.homeRoom == myRoom.name);  
-                    checkEmergencyRoles &= numRole == 0;                  
+                    var numRole = _.sum(Game.creeps, (c) => c.memory.role == roleObj.name && c.memory.homeRoom == myRoom.name);
+                    checkEmergencyRoles |= numRole == 0;                 
                 }
                 if(checkEmergencyRoles){
-                    console.log("EMERGENCY!");
                     this.checkSpawnCreeps(myRoom, global.EmergencyRoleInfo, true);
                 }
             }

@@ -23,7 +23,7 @@ module.exports = {
         }
         else
         {
-            creep.WithdrawEnergy([STRUCTURE_STORAGE]);
+            creep.WithdrawEnergy(undefined, creep.store.getFreeCapacity(RESOURCE_ENERGY));
         }
     }
 };

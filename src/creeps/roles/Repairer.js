@@ -15,11 +15,23 @@ module.exports = {
         creep.CheckState();
         if(creep.memory.working)
         {
-            creep.TransferEnergy([STRUCTURE_TOWER]);
+            if(creep.room.find(FIND_STRUCTURES), {filter: (s) => s.structureType == STRUCTURE_TOWER}){
+                creep.TransferEnergy([STRUCTURE_TOWER]);
+            }
+            else{
+                var dmgStruct = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                    filter: (s) => s.structureType != STRUCTURE_WALL &&
+                                   s.structureType != STRUCTURE_RAMPART &&
+                                   s.hits < s.hitsMax
+                });
+                if(!dmgStruct){
+                    creep.repair(dmgStruct);
+                }
+            }
         }
         else
         {
-            creep.WithdrawEnergy([STRUCTURE_STORAGE]);
+            creep.WithdrawEnergy();
         }
     }
 

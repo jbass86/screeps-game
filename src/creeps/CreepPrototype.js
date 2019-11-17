@@ -13,6 +13,19 @@ module.exports = function () {
             if(!minUsedCapacity){
                 minUsedCapacity = 1;
             }
+            if(!structures){
+                if(this.room.storage){
+                    structures = [STRUCTURE_STORAGE]
+                }
+                else if(this.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_CONTAINER &&
+                                                                     s.store.getUsedCapacity(RESOURCE_ENERGY) >= this.store.getFreeCapacity(RESOURCE_ENERGY)})){
+                    structures = [STRUCTURE_CONTAINER];
+                }
+                else{
+                    this.HarvestEnergy();
+                    return;
+                }
+            }
 			var energyStructure = this.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (s) => (structures.includes(s.structureType) && s.store.getUsedCapacity(RESOURCE_ENERGY) >= minUsedCapacity &&
                                 (!Memory["transferLinks"] || !Memory.transferLinks[s.id]))
