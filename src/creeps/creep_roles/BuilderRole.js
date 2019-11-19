@@ -39,7 +39,7 @@ module.exports =  class BuilderRoutine extends BaseRole {
             }
 
         } else {
-            this.gatherEnergy(creep);
+            this.gather(creep);
 
             if (creep.store.getFreeCapacity() === 0) {
                 creep.memory.canBuild = true;

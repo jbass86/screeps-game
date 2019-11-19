@@ -9,10 +9,17 @@ const roleConfig = {
         parts: [MOVE, WORK, WORK, WORK, WORK],
         minParts: 3
     },
+    "transporter": {
+        name: "Transporter", 
+        role: ["transporter", "harvester", "upgrader"], 
+        numToHave : 2, 
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        minParts: 3
+    },
     "harvester": {
         name: "Harvester", 
         role: ["harvester", "upgrader"], 
-        numToHave : 4, 
+        numToHave : 2, 
         parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3
     },

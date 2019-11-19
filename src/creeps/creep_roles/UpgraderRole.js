@@ -25,7 +25,7 @@ module.exports = class UpgraderRole extends BaseRole {
             }
         }
         else {
-            this.gatherEnergy(creep);
+            this.gather(creep);
         }
         
         return true;

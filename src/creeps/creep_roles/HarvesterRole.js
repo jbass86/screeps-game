@@ -18,7 +18,7 @@ module.exports = class HarvesterRole extends BaseRole {
 
     run (creep) {
         
-        if (!this.gatherEnergy(creep)) {
+        if (!this.gather(creep)) {
             
             if (!creep.memory.transferTarget) {
                 const targets = creep.room.find(FIND_STRUCTURES, {
@@ -35,7 +35,7 @@ module.exports = class HarvesterRole extends BaseRole {
                     return false;
                 }  
               
-                targets.sort((a, b) => priorities[a.structureType] > priorities[b.structureType]);
+                targets.sort((a, b) => priorities[b.structureType] - priorities[a.structureType]);
                 creep.memory.transferTarget = targets[0].id;
             } 
             
