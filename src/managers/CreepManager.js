@@ -32,7 +32,7 @@ const roleConfig = {
     },
     "builder": {
         name: "Builder", 
-        role: ["builder", "upgrader"], 
+        role: ["builder", "maintainer", "upgrader"], 
         numToHave : 3, 
         parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3

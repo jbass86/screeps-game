@@ -9,9 +9,9 @@ module.exports = class MaintainerRole extends BaseRole {
     }
 
     run(creep, role) {
-
+    
         if (creep.memory.canRepair) {
-
+            creep.say("can")
             if (creep.store[RESOURCE_ENERGY] > 0) {
 
                 if (!creep.memory.repairTarget) {
@@ -31,16 +31,34 @@ module.exports = class MaintainerRole extends BaseRole {
                         }
 
                     } else {
-                        const damagedStructure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                      
+                        const damagedStructures = creep.room.find(FIND_STRUCTURES, {
                             filter: (struct) => struct.hits < struct.hitsMax && struct.structureType !== STRUCTURE_WALL
                         });
-
-                        if (damagedStructure) {
-                            creep.memory.repairTarget = damagedStructure.id;
+                        
+                        if (damagedStructures && damagedStructures.length >= 1) {
+                            
+                            let lowestPercent = 1;
+                            let weakestStructure = null;
+                            for (let structure of damagedStructures) {
+                                const percent = structure.hits / structure.hitsMax;
+                                if (percent < lowestPercent) {
+                                    lowestPercent = percent;
+                                    weakestStructure = structure;
+                                }
+                            }
+    
+                            if (weakestStructure) {
+                                
+                                creep.memory.repairTarget = weakestStructure.id;
+                            } else {
+                                //There is no structure to repair so we cannot perform this role...
+                                return false;
+                            }
                         } else {
-                            //There is no structure to repair so we cannot perform this role...
                             return false;
                         }
+                       
                     }        
                 }
 
@@ -66,7 +84,7 @@ module.exports = class MaintainerRole extends BaseRole {
             }
 
         } else {
-            if (!this.gather(creep) === 0) {
+            if (!this.gather(creep)) {
                 creep.memory.canRepair = true;
             }
         }
