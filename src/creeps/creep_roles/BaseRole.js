@@ -30,7 +30,7 @@ module.exports = class BaseRole {
         let resourceType = resource || RESOURCE_ENERGY;
         let priorityList = priority || defaultPriority;
         
-        if(creep.store.getFreeCapacity() > 0) {
+        if(creep.store.getFreeCapacity(resourceType) > 0) {
     
             if (!creep.memory.gatherTarget) {
                 for (let gatherType of priorityList) {

@@ -11,12 +11,11 @@ module.exports = class MaintainerRole extends BaseRole {
     run(creep, role) {
     
         if (creep.memory.canRepair) {
-            creep.say("can")
+
             if (creep.store[RESOURCE_ENERGY] > 0) {
 
                 if (!creep.memory.repairTarget) {
-
-                      
+                     
                     if (role === "wallguy") {
                         let damagedWalls = creep.room.find(FIND_STRUCTURES, {
                             filter: (struct) => struct.hits < struct.hitsMax && struct.structureType === STRUCTURE_WALL
@@ -49,7 +48,6 @@ module.exports = class MaintainerRole extends BaseRole {
                             }
     
                             if (weakestStructure) {
-                                
                                 creep.memory.repairTarget = weakestStructure.id;
                             } else {
                                 //There is no structure to repair so we cannot perform this role...
