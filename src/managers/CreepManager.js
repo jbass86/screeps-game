@@ -13,42 +13,42 @@ const roleConfig = {
         name: "Transporter", 
         role: ["transporter", "harvester", "upgrader"], 
         numToHave : 2, 
-        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE],
         minParts: 3
     },
     "harvester": {
         name: "Harvester", 
         role: ["harvester", "upgrader"], 
-        numToHave : 2, 
-        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        numToHave : 4, 
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3
     },
     "upgrader": {
         name: "Upgrader", 
         role: "upgrader", 
         numToHave : 2, 
-        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3
     },
     "builder": {
         name: "Builder", 
         role: ["builder", "upgrader"], 
         numToHave : 3, 
-        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3
     },
     "maintainer": {
         name: "Maintainer", 
         role: ["maintainer", "harvester", "upgrader"], 
         numToHave : 2, 
-        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE],
         minParts: 3
     },
     "wallguy": {
         name: "WallGuy", 
         role: ["wallguy", "upgrader"], 
         numToHave : 1, 
-        parts: [WORK, CARRY, MOVE, WORK, CARRY, MOVE],
+        parts: [WORK, CARRY, MOVE, CARRY, MOVE],
         minParts: 3
     },
 };
@@ -103,7 +103,7 @@ module.exports = class CreepManager {
     
     createCreep(spawn, role) {
         
-        const newName = this.createCreepName(role.name)
+        const newName = this.createCreepName(role.name);
         let parts = [...role.parts];
 
         let success = false;

@@ -41,7 +41,7 @@ module.exports = class BaseRole {
                                 id: target.id, 
                                 elapsedTicks: 0,
                                 type: gatherTypes[gatherType.name].type   
-                            }
+                            };
                             break;
                         }
                     }  
@@ -71,11 +71,11 @@ module.exports = class BaseRole {
                     } else if (gatherSuccess === ERR_NOT_ENOUGH_RESOURCES || 
                         gatherSuccess === ERR_INVALID_TARGET){
                         //Its empty or invalid find something else...
-                        delete creep.memory.gatherTarget
+                        delete creep.memory.gatherTarget;
                         return true;
                     } else {     
                         console.log("Unexpected Gather Error " + gatherSuccess);
-                        delete creep.memory.gatherTarget
+                        delete creep.memory.gatherTarget;
                         return true;
                     }
                     
@@ -141,4 +141,4 @@ module.exports = class BaseRole {
 
         return target;
     }
-}
+};

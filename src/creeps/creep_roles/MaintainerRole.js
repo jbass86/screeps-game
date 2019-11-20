@@ -73,4 +73,4 @@ module.exports = class MaintainerRole extends BaseRole {
 
         return true;
     }
-}
+};

@@ -16,4 +16,4 @@ module.exports = class CreepKiller {
             return false;
         }
     }
-}
+};

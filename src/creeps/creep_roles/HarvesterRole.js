@@ -5,10 +5,10 @@
 const BaseRole = require("BaseRole");
 
 const priorities = {
-    tower: 3,
-    extension: 2, 
-    spawn: 1
-}
+    spawn: 1,
+    tower: 2,
+    extension: 3, 
+};
 
 module.exports = class HarvesterRole extends BaseRole {
 

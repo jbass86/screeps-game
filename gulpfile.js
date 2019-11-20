@@ -30,7 +30,11 @@ function clean(cb) {
 };
 
 function lint(cb) {
-    return src("src/**/*.js").pipe(eslint({fix: true, rules: {strict: 2}})).pipe(eslint.format()).pipe(eslint.failAfterError());
+    return src("src/**/*.js").pipe(eslint({rules: {strict: 2}})).pipe(eslint.format()).pipe(eslint.failAfterError());
+}
+
+function lintfix(cb) {
+    return src("src/**/*.js").pipe(eslint({fix: true, rules: {strict: 2}})).pipe(eslint.format()).pipe(dest("src/"));
 }
 
 function copy(cb) {
@@ -56,6 +60,7 @@ function screeps(cb) {
 
 exports.clean = clean;
 exports.lint = lint;
+exports.lintfix = lintfix;
 exports.copy = copy;
 exports.screeps = screeps;
 exports.build = series(parallel(clean, lint), copy);

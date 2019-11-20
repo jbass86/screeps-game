@@ -52,7 +52,7 @@ module.exports = class HarvesterRole extends BaseRole {
                 if (!creep.memory.energySourceId) {
                     //The closest energy should be right next to this container if we can drop mine it.
                     let source = creep.pos.findClosestByPath(FIND_SOURCES);
-                    let testHarvest = creep.harvest(source)
+                    let testHarvest = creep.harvest(source);
                     if (testHarvest === OK) {
                         creep.memory.mineTarget.energySourceId = source.id;
                     } else if (testHarvest === ERR_NOT_IN_RANGE) {

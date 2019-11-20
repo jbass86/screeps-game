@@ -17,4 +17,4 @@ module.exports = class TowerRepairman {
         }
         return false;
     }
-}
+};

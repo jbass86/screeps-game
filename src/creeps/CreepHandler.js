@@ -29,7 +29,7 @@ const roleMap = {
     "wallguy": maintainer,
     "miner": miner,
     "transporter": transporter
-}
+};
 
 module.exports = class CreepHandler {
 
@@ -71,4 +71,4 @@ module.exports = class CreepHandler {
             } 
         }
     }
-}
+};
