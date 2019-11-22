@@ -6,7 +6,7 @@ const roleConfig = {
         name: "Miner", 
         role: "miner", 
         numToHave : 2, 
-        parts: [MOVE, WORK, WORK, WORK, WORK],
+        parts: [MOVE, WORK, WORK, WORK, WORK, WORK],
         minParts: 3
     },
     "transporter": {

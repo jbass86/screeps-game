@@ -4,11 +4,6 @@
 
 const BaseRole = require("BaseRole");
 
-const priorities = {
-    spawn: 1,
-    tower: 2,
-    extension: 3, 
-};
 
 module.exports = class HarvesterRole extends BaseRole {
 
@@ -35,7 +30,17 @@ module.exports = class HarvesterRole extends BaseRole {
                     return false;
                 }  
               
-                targets.sort((a, b) => priorities[b.structureType] - priorities[a.structureType]);
+                //Find the lowest energy thing and fill that...
+                targets.sort((a, b) => {
+                    if (a.structureType === "tower" && (a.store.getUsedCapacity(RESOURCE_ENERGY) / a.store.getCapacity() <= .5)) {
+                        //if a tower is low give it more weight than normal...
+                        return (a.store.getUsedCapacity(RESOURCE_ENERGY) - 100) - b.store.getUsedCapacity(RESOURCE_ENERGY);
+                    } else {
+                        //otherwise fill the lowest thing...
+                        return a.store.getUsedCapacity(RESOURCE_ENERGY) - b.store.getUsedCapacity(RESOURCE_ENERGY);
+                    }
+                });
+
                 creep.memory.transferTarget = targets[0].id;
             } 
             

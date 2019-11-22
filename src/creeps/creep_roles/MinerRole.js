@@ -10,7 +10,7 @@ if (!Memory.usedContainers) {
     Memory.usedContainers = {};
 }
 
-module.exports = class HarvesterRole extends BaseRole {
+module.exports = class MinerRole extends BaseRole {
 
     constructor() {
         super();
