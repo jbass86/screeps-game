@@ -32,15 +32,21 @@ module.exports = class HarvesterRole extends BaseRole {
               
                 //Find the lowest energy thing and fill that...
                 targets.sort((a, b) => {
-                    if (a.structureType === "tower" && (a.store.getUsedCapacity(RESOURCE_ENERGY) / a.store.getCapacity() <= .5)) {
-                        //if a tower is low give it more weight than normal...
-                        return (a.store.getUsedCapacity(RESOURCE_ENERGY) - 100) - b.store.getUsedCapacity(RESOURCE_ENERGY);
-                    } else {
-                        //otherwise fill the lowest thing...
-                        return a.store.getUsedCapacity(RESOURCE_ENERGY) - b.store.getUsedCapacity(RESOURCE_ENERGY);
-                    }
+                        
+                    let aScore = a.store.getUsedCapacity(RESOURCE_ENERGY);
+                    let bScore = b.store.getUsedCapacity(RESOURCE_ENERGY);
+                    
+                    if (a.structureType === "tower" && (a.store.getUsedCapacity(RESOURCE_ENERGY) / a.store.getCapacity(RESOURCE_ENERGY) <= .5)) {
+                        aScore -= 500;
+                    } 
+                    if (b.structureType === "tower" && (b.store.getUsedCapacity(RESOURCE_ENERGY) / b.store.getCapacity(RESOURCE_ENERGY) <= .5)) {
+                        bScore -= 500;
+                    } 
+                        
+                    return aScore - bScore;
                 });
-
+                
+                console.log("put it in a" + targets[0].structureType);
                 creep.memory.transferTarget = targets[0].id;
             } 
             
