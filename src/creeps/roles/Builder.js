@@ -19,14 +19,14 @@ module.exports = {
             if(constructionSite != undefined)
             {
                 if(creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(constructionSite, {maxRooms:1});
+                    creep.moveTo(constructionSite, {maxRooms:1, ignoreCreeps: false});
                 }
             }
             else
             {
                 let constructionSiteKeys = Object.keys(Game.constructionSites)
                 if(creep.memory.crossRoom && constructionSiteKeys.length > 0){
-                    creep.moveTo(Game.constructionSites[constructionSiteKeys[0]]);
+                    creep.moveTo(Game.constructionSites[constructionSiteKeys[0]], {ignoreCreeps: false});
                 }
                 else {
                     upgrader.run(creep);
@@ -36,9 +36,9 @@ module.exports = {
         else
         {
             if(creep.room.name != creep.memory.homeRoom && !creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES)){
-                creep.moveTo(Game.rooms[creep.memory.homeRoom].storage);
+                creep.moveTo(Game.rooms[creep.memory.homeRoom].storage, {ignoreCreeps: false});
             }
-            creep.WithdrawEnergy(undefined, creep.store.getFreeCapacity(RESOURCE_ENERGY));
+            creep.WithdrawEnergy();
         }
     }
 

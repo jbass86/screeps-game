@@ -1,44 +1,38 @@
 
 
 module.exports = {
-    run(){
-        var towers = Game.rooms.E39S33.find(FIND_STRUCTURES, {
-            filter: (s) => s.structureType == STRUCTURE_TOWER
+    run(tower){
+        var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
+            filter: (t) => global.Friends[t.owner.username] == undefined
         });
-        for(let tower of towers)
+        if(target != undefined)
         {
-            var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
-                filter: (t) => global.Friends[t.owner.username] == undefined
+            tower.attack(target);
+        }
+        else {
+            /*var dmgStruct = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: (s) => s.structureType != STRUCTURE_WALL &&
+                                s.structureType != STRUCTURE_RAMPART &&
+                                s.hits < s.hitsMax
             });
-            if(target != undefined)
-            {
-                tower.attack(target);
+            if(dmgStruct != undefined){
+                tower.repair(dmgStruct);
             }
-            else {
-                var dmgStruct = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                    filter: (s) => s.structureType != STRUCTURE_WALL &&
-                                   s.structureType != STRUCTURE_RAMPART &&
-                                   s.hits < s.hitsMax
+            else {*/
+                var dmgWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                    filter: (w) => (w.structureType == STRUCTURE_RAMPART) &&
+                                    w.hits < 50000
                 });
-                if(dmgStruct != undefined){
-                    tower.repair(dmgStruct);
-                }
-                else {
-                    var dmgWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (w) => (w.structureType == STRUCTURE_RAMPART) &&
+                if(!dmgWall)
+                {
+                    dmgWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                        filter: (w) => (w.structureType == STRUCTURE_WALL ||
+                                        w.structureType == STRUCTURE_RAMPART) &&
                                         w.hits < 50000
                     });
-                    if(!dmgWall)
-                    {
-                        dmgWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                            filter: (w) => (w.structureType == STRUCTURE_WALL ||
-                                            w.structureType == STRUCTURE_RAMPART) &&
-                                            w.hits < 50000
-                        });
-                    }
-                    tower.repair(dmgWall);
                 }
-            }
+                tower.repair(dmgWall);
+            //}
         }
     }
 };

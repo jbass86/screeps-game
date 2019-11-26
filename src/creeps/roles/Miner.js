@@ -38,7 +38,7 @@ module.exports = {
 		}
 		
 		if (creep.pos.x != targetContainer.pos.x || creep.pos.y != targetContainer.pos.y || creep.pos.room != targetContainer.pos.room) {
-			creep.moveTo(targetContainer, { maxRooms: 1 });
+			creep.moveTo(targetContainer, { maxRooms: 1, ignoreCreeps: false });
 		}
 		else {
 			var source = creep.pos.findClosestByPath(FIND_SOURCES);

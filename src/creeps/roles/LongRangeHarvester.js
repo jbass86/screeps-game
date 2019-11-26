@@ -22,14 +22,14 @@ module.exports = {
         if(creep.memory.working)
         {
             if(creep.transfer(Game.getObjectById(creep.memory.home), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-                creep.moveTo(Game.getObjectById(creep.memory.home));
+                creep.moveTo(Game.getObjectById(creep.memory.home), {ignoreCreeps: false});
             }
         }
         else
         {
             if(creep.room == Game.getObjectById(creep.memory.home).room)
             {
-                creep.moveTo(creep.memory.exit.x, creep.memory.exit.y);
+                creep.moveTo(creep.memory.exit.x, creep.memory.exit.y, {ignoreCreeps: false});
             }
             else {
                 creep.HarvestEnergy();

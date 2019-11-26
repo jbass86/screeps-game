@@ -33,7 +33,7 @@ module.exports = {
         }
         
         if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(creep.memory.mineLocation.x, creep.memory.mineLocation.y);
+            creep.moveTo(creep.memory.mineLocation.x, creep.memory.mineLocation.y, {ignoreCreeps: false});
         }
         creep.transfer(transferLink, RESOURCE_ENERGY);
 

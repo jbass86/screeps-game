@@ -18,23 +18,40 @@ module.exports = function () {
                     structures = [STRUCTURE_STORAGE]
                 }
                 else if(this.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_CONTAINER &&
-                                                                     s.store.getUsedCapacity(RESOURCE_ENERGY) >= this.store.getFreeCapacity(RESOURCE_ENERGY)})){
+                                                                     s.store.getUsedCapacity(RESOURCE_ENERGY) >= 1})){
                     structures = [STRUCTURE_CONTAINER];
+                    minUsedCapacity = this.store.getFreeCapacity(RESOURCE_ENERGY);
                 }
                 else{
-                    this.HarvestEnergy();
-                    return;
+                    structures = [];
+                    //this.HarvestEnergy();
+                    //return;
                 }
             }
-			var energyStructure = this.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (s) => (structures.includes(s.structureType) && s.store.getUsedCapacity(RESOURCE_ENERGY) >= minUsedCapacity &&
+
+            var energyStructure= this.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (s) => (structures.includes(s.structureType) && 
+                                s.store.getUsedCapacity(RESOURCE_ENERGY)/*-_.get(Memory, [s.id, "energyAllocated"], 0)*/ >= this.store.getFreeCapacity(RESOURCE_ENERGY) &&
                                 (!Memory["transferLinks"] || !Memory.transferLinks[s.id]))
-			});
+            });
+            if(!energyStructure){
+                energyStructure = this.pos.findClosestByPath(FIND_STRUCTURES, {
+                    filter: (s) => (structures.includes(s.structureType) &&
+                                    s.store.getUsedCapacity(RESOURCE_ENERGY)/*-_.get(Memory, [s.id, "energyAllocated"], 0)*/ >= minUsedCapacity &&
+                                    (!Memory["transferLinks"] || !Memory.transferLinks[s.id]))
+                });
+            }
 
             if (energyStructure) {
                 if (this.withdraw(energyStructure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    this.moveTo(energyStructure, { maxRooms: 1 });
-				}
+                    let newAllocated = _.get(Memory, [energyStructure.id, "energyAllocated"], 0)+this.store.getFreeCapacity(RESOURCE_ENERGY);
+                    _.set(Memory, [energyStructure.id, "energyAllocated"], newAllocated);
+                    this.moveTo(energyStructure, { maxRooms: 1, ignoreCreeps: false });
+                }
+                else {
+                    let newAllocated = Math.max(_.get(Memory, [energyStructure.id, "energyAllocated"], 0)-this.store.getFreeCapacity(RESOURCE_ENERGY), 0);
+                    _.set(Memory, [energyStructure.id, "energyAllocated"], newAllocated);
+                }
             }
         }
 
@@ -46,7 +63,7 @@ module.exports = function () {
             
             if (storageStructure) {
                 if (this.transfer(storageStructure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    this.moveTo(storageStructure, { maxRooms: 1 });
+                    this.moveTo(storageStructure, { maxRooms: 1, ignoreCreeps: false });
                 }
             }
         }
@@ -60,7 +77,7 @@ module.exports = function () {
             
             if(dropped){
                 if( this.pickup(dropped) == ERR_NOT_IN_RANGE) {
-                    this.moveTo(dropped);
+                    this.moveTo(dropped, {ignoreCreeps: false});
                 }
                 return true;
             }
@@ -72,7 +89,7 @@ module.exports = function () {
             var source = this.pos.findClosestByPath(FIND_SOURCES);
             if (source) {
                 if (this.harvest(source) == ERR_NOT_IN_RANGE) {
-                    this.moveTo(source, { maxRooms: 1 });
+                    this.moveTo(source, { maxRooms: 1, ignoreCreeps: false });
                 }
             }
         }

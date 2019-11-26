@@ -12,10 +12,10 @@ module.exports = {
         //creep.say("Harvester!");
         creep.CheckState()
         if (creep.memory.working) {
-            creep.TransferEnergy([STRUCTURE_SPAWN, STRUCTURE_EXTENSION]);
+            creep.TransferEnergy([STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER]);
         }
         else {
-            creep.WithdrawEnergy(undefined, creep.store.getFreeCapacity(RESOURCE_ENERGY));
+            creep.WithdrawEnergy();
         }
            
     }

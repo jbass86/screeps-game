@@ -11,23 +11,26 @@ var builder = require('Builder');
 
 module.exports = {
     run(creep) {
-        //creep.say("Repairer!");
+        creep.say("Repairer!");
         creep.CheckState();
         if(creep.memory.working)
         {
-            if(creep.room.find(FIND_STRUCTURES), {filter: (s) => s.structureType == STRUCTURE_TOWER}){
-                creep.TransferEnergy([STRUCTURE_TOWER]);
-            }
-            else{
+            //if(creep.room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}).length > 0){
+            //   creep.TransferEnergy([STRUCTURE_TOWER]);
+            //}
+            //else{
                 var dmgStruct = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (s) => s.structureType != STRUCTURE_WALL &&
                                    s.structureType != STRUCTURE_RAMPART &&
                                    s.hits < s.hitsMax
                 });
-                if(!dmgStruct){
-                    creep.repair(dmgStruct);
+                
+                if(dmgStruct){
+                    if(creep.repair(dmgStruct) == ERR_NOT_IN_RANGE){
+                        creep.moveTo(dmgStruct, {ignoreCreeps: false});
+                    }
                 }
-            }
+            //}
         }
         else
         {

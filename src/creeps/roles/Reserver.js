@@ -9,12 +9,12 @@ module.exports = {
         }
         if(creep.room == Game.getObjectById(creep.memory.home).room)
         {
-            creep.moveTo(creep.memory.exit.x, creep.memory.exit.y);
+            creep.moveTo(creep.memory.exit.x, creep.memory.exit.y, {ignoreCreeps: false});
         }
         else {
             
             if(creep.reserveController( creep.room.controller) == ERR_NOT_IN_RANGE){
-                creep.moveTo(creep.room.controller);
+                creep.moveTo(creep.room.controller, {ignoreCreeps: false});
             }
         }
     }

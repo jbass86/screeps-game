@@ -14,7 +14,7 @@ module.exports = {
         if(creep.memory.working)
         {
             if(creep.upgradeController(creep.room.controller, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller, {maxRooms:1});
+                creep.moveTo(creep.room.controller, {maxRooms:1, ignoreCreeps: false});
             }
             if(creep.carry.energy == 0)
             {
@@ -23,7 +23,7 @@ module.exports = {
         }
         else
         {
-            creep.WithdrawEnergy(undefined, creep.store.getFreeCapacity(RESOURCE_ENERGY));
+            creep.WithdrawEnergy();
         }
     }
 };
