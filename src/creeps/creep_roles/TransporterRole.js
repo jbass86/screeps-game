@@ -5,7 +5,7 @@
 const BaseRole = require("BaseRole");
 
 const gatherPriority = [
-    {name: "ground", style: "cloest"}, 
+    {name: "ground", style: "closest"}, 
     {name: "container", style: "most"}
 ];
 
