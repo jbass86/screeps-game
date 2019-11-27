@@ -2,14 +2,16 @@
 
 
 const gatherTypes = {
-    "ground": {name: "ground", type: "item"}, 
+    "ground": {name: "ground", type: "item"},
+    "tombstone": {name: "tombstone", type: "item"},  
     "storage": {name: "storage", type: "structure", id: STRUCTURE_STORAGE}, 
     "container": {name: "container", type: "structure", id: STRUCTURE_CONTAINER}, 
     "node": {name: "node", type: "node"}
 };
 
-const defaultPriority = [
-    {name: "ground", style: "cloest"}, 
+const defaultPriority = [  
+    {name: "ground", style: "closest"}, 
+    {name: "tombstone", style: "closest"},
     {name: "storage", style: "closest"}, 
     {name: "container", style: "most"}, 
     {name: "node", style: "most"}
@@ -93,15 +95,30 @@ module.exports = class BaseRole {
         }
     }
 
+    /**
+     * 
+     * @param {*} creep The creep in question
+     * @param {*} resource The resource to find
+     * @param {*} style The style in which to search
+     * @param {*} data The data describing the search targets
+     */
     findTarget(creep, resource, style, data) {
 
         let target = null;
-
+    
         if (style === "closest") {
+          
             if (data.type === "item") {
-                target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-                    filter: (item) => item.resourceType === resource
-                });
+
+                if (data.name === "ground") {
+                    target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+                        filter: (item) => item.resourceType === resource
+                    });
+                } else if (data.name === "tombstone") {
+                    target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+                        filter: (item) => item.resourceType === resource
+                    });
+                }               
             } else if (data.type === "structure") {
                 target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (struct) => struct.structureType === data.id && struct.store.getUsedCapacity(resource) > 0
@@ -111,16 +128,31 @@ module.exports = class BaseRole {
             }
            
         } else if (style === "most") {
+            
             if (data.type === "item") {
-                const targets = target = creep.room.find(FIND_DROPPED_RESOURCES, {
-                    filter: (item) => item.resourceType === resource
-                });
-                if (targets && targets.length > 0) {
-                    targets.sort((a, b) => b.amount - a.amount);
-                    target = targets[0];
+
+                if (data.name === "ground") {
+                    const targets = target = creep.room.find(FIND_DROPPED_RESOURCES, {
+                        filter: (item) => item.resourceType === resource
+                    });
+    
+                    if (targets && targets.length > 0) {
+                        targets.sort((a, b) => b.amount - a.amount);
+                        target = targets[0];
+                    }
+                } else if (data.name === "tombstone") {
+                    const targets = target = creep.room.find(FIND_TOMBSTONES, {
+                        filter: (item) => item.resourceType === resource
+                    });
+    
+                    if (targets && targets.length > 0) {
+                        targets.sort((a, b) => b.store.getUsedCapacity(resource) - a.store.getUsedCapacity(resource));
+                        target = targets[0];
+                    }
                 }
                 
             } else if (data.type === "structure") {
+
                 const targets = creep.room.find(FIND_STRUCTURES, {
                     filter: (struct) => struct.structureType === data.id && struct.store.getUsedCapacity(resource) > 0
                 });
@@ -137,8 +169,10 @@ module.exports = class BaseRole {
                     target = targets[0];
                 }
             }
+        } else {
+            console.log("unknown gather style " + style);
         }
-
+        
         return target;
     }
 };
