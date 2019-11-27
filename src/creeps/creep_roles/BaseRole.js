@@ -175,4 +175,17 @@ module.exports = class BaseRole {
         
         return target;
     }
+
+
+    cullStructureMap(name) {
+
+        for (let entry of Object.entries(Memory[name])) {
+            if (entry[1] && entry[1] !== "INVALID") {    
+                const creepLives = Game.creeps[entry[1]];
+                if (!creepLives){
+                    Memory[name][entry[0]] = false;
+                }
+            }
+        }
+    }
 };
