@@ -35,7 +35,7 @@ module.exports = class BaseRole {
      */
     gather(creep, resource, priority) {
 
-
+        Game.time % 30 === 0 ? this.cullClaimedPickups() : null;
 
         let resourceType = resource || RESOURCE_ENERGY;
         let priorityList = priority || defaultPriority;
@@ -226,7 +226,9 @@ module.exports = class BaseRole {
     }
 
     cleanupGatherTarget(creep) {
-        delete Memory.claimedPickups[creep.memory.gatherTarget.id];
-        delete creep.memory.gatherTarget;
+        if (creep.memory.gatherTarget){
+            delete Memory.claimedPickups[creep.memory.gatherTarget.id];
+            delete creep.memory.gatherTarget;
+        }
     }
 };
