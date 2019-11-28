@@ -21,6 +21,9 @@ const miner = new MinerRole();
 const TransporterRole = require("TransporterRole");
 const transporter = new TransporterRole();
 
+const LinkerRole = require("LinkerRole");
+const linker = new LinkerRole();
+
 const roleMap = {
     "harvester": harvester,
     "upgrader": upgrader,
@@ -28,7 +31,8 @@ const roleMap = {
     "maintainer": maintainer,
     "wallguy": maintainer,
     "miner": miner,
-    "transporter": transporter
+    "transporter": transporter,
+    "linker": linker
 };
 
 module.exports = class CreepHandler {

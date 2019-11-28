@@ -16,6 +16,13 @@ const roleConfig = {
         parts: [WORK, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE],
         minParts: 3
     },
+    // "linker": {
+    //     name: "LinkDude", 
+    //     role: "linker", 
+    //     numToHave : 2, 
+    //     parts: [WORK, CARRY, MOVE, CARRY, MOVE],
+    //     minParts: 3
+    // },
     "harvester": {
         name: "Harvester", 
         role: ["harvester", "upgrader"], 

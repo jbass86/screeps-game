@@ -3,7 +3,7 @@
 
 const gatherTypes = {
     "ground": {name: "ground", type: "item"},
-    "tombstone": {name: "tombstone", type: "item"},  
+    "tombstone": {name: "tombstone", type: "structure"},  
     "storage": {name: "storage", type: "structure", id: STRUCTURE_STORAGE}, 
     "container": {name: "container", type: "structure", id: STRUCTURE_CONTAINER}, 
     "node": {name: "node", type: "node"}
@@ -17,6 +17,12 @@ const defaultPriority = [
     {name: "node", style: "most"}
 ];
 
+if (!Memory.claimedPickups) {
+    Memory.claimedPickups = {};
+}
+//TODO create claimedPickups {} and if a creep is going to scoop up all of a resource then do not let
+//any other creeps try to go after it on the same tick...
+
 module.exports = class BaseRole {
 
     constructor() {}
@@ -28,6 +34,8 @@ module.exports = class BaseRole {
      * @param {*} priority An array of object for the gather priority (Will default to defaultPriority)
      */
     gather(creep, resource, priority) {
+
+
 
         let resourceType = resource || RESOURCE_ENERGY;
         let priorityList = priority || defaultPriority;
@@ -73,24 +81,24 @@ module.exports = class BaseRole {
                     } else if (gatherSuccess === ERR_NOT_ENOUGH_RESOURCES || 
                         gatherSuccess === ERR_INVALID_TARGET){
                         //Its empty or invalid find something else...
-                        delete creep.memory.gatherTarget;
+                        this.cleanupGatherTarget(creep);
                         return true;
                     } else {     
                         console.log("Unexpected Gather Error " + gatherSuccess);
-                        delete creep.memory.gatherTarget;
+                        this.cleanupGatherTarget(creep);
                         return true;
                     }
                     
                     if (creep.memory.gatherTarget.elapsedTicks > 100) {
                         creep.say("give up");
-                        delete creep.memory.gatherTarget;
+                        this.cleanupGatherTarget(creep);
                     }
-                }
+                } 
             }
 
             return true;
         } else {
-            delete creep.memory.gatherTarget;
+            this.cleanupGatherTarget(creep);
             return false;
         }
     }
@@ -105,24 +113,28 @@ module.exports = class BaseRole {
     findTarget(creep, resource, style, data) {
 
         let target = null;
-    
+
         if (style === "closest") {
           
             if (data.type === "item") {
 
                 if (data.name === "ground") {
                     target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-                        filter: (item) => item.resourceType === resource
+                        filter: (item) => item.resourceType === resource && !Memory.claimedPickups[item.id]
                     });
-                } else if (data.name === "tombstone") {
-                    target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-                        filter: (item) => item.resourceType === resource
-                    });
-                }               
+                }          
             } else if (data.type === "structure") {
-                target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (struct) => struct.structureType === data.id && struct.store.getUsedCapacity(resource) > 0
-                });
+                if (data.name === "tombstone") {
+                    target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+                        filter: (item) => item.resourceType === resource && !Memory.claimedPickups[item.id]
+                    });
+                } else {
+                    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                        filter: (struct) => struct.structureType === data.id && 
+                        struct.store.getUsedCapacity(resource) > 0 && !Memory.claimedPickups[struct.id]
+                    });
+                }     
+               
             } else if (data.type === "node") {
                 target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
             }
@@ -133,34 +145,36 @@ module.exports = class BaseRole {
 
                 if (data.name === "ground") {
                     const targets = target = creep.room.find(FIND_DROPPED_RESOURCES, {
-                        filter: (item) => item.resourceType === resource
+                        filter: (item) => item.resourceType === resource && !Memory.claimedPickups[item.id]
                     });
     
                     if (targets && targets.length > 0) {
                         targets.sort((a, b) => b.amount - a.amount);
                         target = targets[0];
                     }
-                } else if (data.name === "tombstone") {
+                } 
+                
+            } else if (data.type === "structure") {
+
+                if (data.name === "tombstone") {
                     const targets = target = creep.room.find(FIND_TOMBSTONES, {
-                        filter: (item) => item.resourceType === resource
+                        filter: (item) => item.resourceType === resource && !Memory.claimedPickups[item.id]
                     });
     
                     if (targets && targets.length > 0) {
                         targets.sort((a, b) => b.store.getUsedCapacity(resource) - a.store.getUsedCapacity(resource));
                         target = targets[0];
                     }
-                }
-                
-            } else if (data.type === "structure") {
-
-                const targets = creep.room.find(FIND_STRUCTURES, {
-                    filter: (struct) => struct.structureType === data.id && struct.store.getUsedCapacity(resource) > 0
-                });
-                if (targets && targets.length > 0) {
-                    targets.sort((a, b) => b.store.getUsedCapacity(resource) - a.store.getUsedCapacity(resource));
-                    target = targets[0];
-                }
-               
+                } else {
+                    const targets = creep.room.find(FIND_STRUCTURES, {
+                        filter: (struct) => struct.structureType === data.id && 
+                            struct.store.getUsedCapacity(resource) > 0 && !Memory.claimedPickups[struct.id]
+                    });
+                    if (targets && targets.length > 0) {
+                        targets.sort((a, b) => b.store.getUsedCapacity(resource) - a.store.getUsedCapacity(resource));
+                        target = targets[0];
+                    }
+                }   
             } else if (data.type === "node") {
                 //This needs to support minerals and Deposits still....
                 const targets = creep.room.find(FIND_SOURCES_ACTIVE);
@@ -172,20 +186,47 @@ module.exports = class BaseRole {
         } else {
             console.log("unknown gather style " + style);
         }
+
+        if (target) {
+            if ((data.type === "item" && creep.store.getFreeCapacity() >= target.amount) || 
+                (data.type === "structure" && creep.store.getFreeCapacity() >= target.store.getUsedCapacity(resource))) {
+                Memory.claimedPickups[target.id] = creep.name;
+            }
+        }
         
         return target;
     }
 
+    cullClaimedPickups() {
+        for (let key of Object.keys(Memory.claimedPickups)) {
+            let gameObject = Game.getObjectById(key);
+            if (!gameObject) {
+                delete Memory.claimedPickups[key];
+            }
+        }
+    }
 
     cullStructureMap(name) {
 
         for (let entry of Object.entries(Memory[name])) {
-            if (entry[1] && entry[1] !== "INVALID") {    
-                const creepLives = Game.creeps[entry[1]];
-                if (!creepLives){
-                    Memory[name][entry[0]] = false;
+
+            let obj = Game.getObjectById(entry[0]);
+            if (!obj) {
+                delete name[entry[0]];
+                return;
+            } else {
+                if (entry[1] && entry[1] !== "INVALID") {    
+                    const creepLives = Game.creeps[entry[1]];
+                    if (!creepLives){
+                        Memory[name][entry[0]] = false;
+                    }
                 }
             }
         }
+    }
+
+    cleanupGatherTarget(creep) {
+        delete Memory.claimedPickups[creep.memory.gatherTarget.id];
+        delete creep.memory.gatherTarget;
     }
 };
