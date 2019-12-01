@@ -12,7 +12,7 @@ const roleConfig = {
     "transporter": {
         name: "Transporter", 
         role: ["transporter", "harvester", "upgrader"], 
-        numToHave : 2, 
+        numToHave : 1, 
         parts: [WORK, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE],
         minParts: 3
     },
@@ -94,7 +94,7 @@ module.exports = class CreepManager {
     replenishCreeps(availableCreeps) {
 
         Memory.replenishNextTick = false;
-        
+
         for (let spawn of Object.values(Game.spawns)) {  
             for (let roleName of rolePriority) {
                 let role = roleConfig[roleName];

@@ -98,7 +98,7 @@ module.exports = class LinkerRole extends BaseRole {
             }
         } else {
             Memory.linkMap[link.id].assignee = creep.name;
-            creep.memory.linkTarget = {link: link.id, container: Memory.linkMap[link.id].container, type: type};
+            creep.memory.linkTarget = {link: link.id, container: Memory.linkMap[link.id].structId, type: type};
             return true;
         }
        
