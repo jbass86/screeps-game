@@ -88,6 +88,8 @@ module.exports = class LinkerRole extends BaseRole {
     checkAssignLink(creep, link, type) {
 
         if (!Memory.linkMap[link.id]) {
+
+            //currently I expect the link to be right next to either a drop mine container or storage...
             let structures = link.pos.findInRange(FIND_STRUCTURES, 1, {
                 filter: (struct) => struct.structureType === (type === "from" ? STRUCTURE_CONTAINER : STRUCTURE_STORAGE)
             });
@@ -96,7 +98,7 @@ module.exports = class LinkerRole extends BaseRole {
                 creep.memory.linkTarget = {link: link.id, container: structures[0].id, type: type};
                 return true;
             }
-        } else {
+        } else if (Memory.linkMap[link.id].type === type) {
             Memory.linkMap[link.id].assignee = creep.name;
             creep.memory.linkTarget = {link: link.id, container: Memory.linkMap[link.id].structId, type: type};
             return true;

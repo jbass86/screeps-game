@@ -60,7 +60,7 @@ const roleConfig = {
     },
 };
 
-const rolePriority = [ "harvester", "miner", "transporter", "linker", "upgrader", "builder", "maintainer", "wallguy"];
+const rolePriority = [ "harvester", "miner",  "linker", "transporter", "upgrader", "builder", "maintainer", "wallguy"];
 
 module.exports = class CreepManager {
 
