@@ -40,7 +40,7 @@ module.exports = class CreepHandler {
     constructor() {}
 
     handleCreepManagement() {
-        if (Game.time % 60 === 0){
+        if (Game.time % 60 === 0 || Memory.replenishNextTick){
             manager.cullCreepMemory();
             manager.replenishCreeps(manager.createCreepRoleMap());
         }

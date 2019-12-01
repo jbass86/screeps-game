@@ -35,7 +35,7 @@ module.exports = class BaseRole {
      */
     gather(creep, resource, priority) {
 
-        Game.time % 30 === 0 ? this.cullClaimedPickups() : null;
+        Game.time % 30 === 0 ? this.cullStructureMap("claimedPickups") : null;
 
         let resourceType = resource || RESOURCE_ENERGY;
         let priorityList = priority || defaultPriority;
@@ -79,7 +79,7 @@ module.exports = class BaseRole {
                     if(gatherSuccess === ERR_NOT_IN_RANGE) {
                         creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
                     } else if (gatherSuccess === ERR_NOT_ENOUGH_RESOURCES || 
-                        gatherSuccess === ERR_INVALID_TARGET){
+                        gatherSuccess === ERR_INVALID_TARGET) {
                         //Its empty or invalid find something else...
                         this.cleanupGatherTarget(creep);
                         return true;
@@ -155,7 +155,6 @@ module.exports = class BaseRole {
                 } 
                 
             } else if (data.type === "structure") {
-
                 if (data.name === "tombstone") {
                     const targets = target = creep.room.find(FIND_TOMBSTONES, {
                         filter: (item) => item.resourceType === resource && !Memory.claimedPickups[item.id]
@@ -212,15 +211,21 @@ module.exports = class BaseRole {
 
             let obj = Game.getObjectById(entry[0]);
             if (!obj) {
-                delete name[entry[0]];
-                return;
+                delete Memory[name][entry[0]];
             } else {
-                if (entry[1] && entry[1] !== "INVALID") {    
-                    const creepLives = Game.creeps[entry[1]];
-                    if (!creepLives){
-                        Memory[name][entry[0]] = false;
+                if (entry[1]) {
+                    if (typeof entry[1] === "string") {
+                        const creepLives = Game.creeps[entry[1]];
+                        if (!creepLives){
+                            Memory[name][entry[0]] = false;
+                        }
+                    } else if (typeof entry[1] === "object") {
+                        const creepLives = Game.creeps[entry[1].assignee];
+                        if (!creepLives){
+                            Memory[name][entry[0]].assignee = false;
+                        }
                     }
-                }
+                } 
             }
         }
     }

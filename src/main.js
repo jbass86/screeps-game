@@ -14,11 +14,15 @@ const creeps = new CreepHandler();
 const TowerHandler = require("TowerHandler");
 const towers = new TowerHandler();
 
+const StructureHandler = require("StructureHandler");
+const structures = new StructureHandler();
+
 class MainApp {
     
     loop() {    
         creeps.run();
         towers.run();
+        structures.run();
     }
 }
 

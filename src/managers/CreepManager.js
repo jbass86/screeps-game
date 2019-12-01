@@ -16,13 +16,13 @@ const roleConfig = {
         parts: [WORK, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE],
         minParts: 3
     },
-    // "linker": {
-    //     name: "LinkDude", 
-    //     role: "linker", 
-    //     numToHave : 2, 
-    //     parts: [WORK, CARRY, MOVE, CARRY, MOVE],
-    //     minParts: 3
-    // },
+    "linker": {
+        name: "LinkDude", 
+        role: "linker", 
+        numToHave : 2, 
+        parts: [WORK, CARRY, MOVE, CARRY, MOVE],
+        minParts: 3
+    },
     "harvester": {
         name: "Harvester", 
         role: ["harvester", "upgrader"], 
@@ -60,6 +60,8 @@ const roleConfig = {
     },
 };
 
+const rolePriority = [ "harvester", "miner", "transporter", "linker", "upgrader", "builder", "maintainer", "wallguy"];
+
 module.exports = class CreepManager {
 
     constructor() {}
@@ -91,20 +93,20 @@ module.exports = class CreepManager {
     
     replenishCreeps(availableCreeps) {
 
-        for (let spawn of Object.values(Game.spawns)) {       
-            (() => {
-                let roles = Object.keys(roleConfig);
-                roles.sort((a, b) => availableCreeps[a] - availableCreeps[b]);
-                for (let roleName of roles) {
-                    let role = roleConfig[roleName];
-                    if (!availableCreeps[role.role] || availableCreeps[role.role] < role.numToHave) {
-                        let createSuccess = this.createCreep(spawn, role);
-                        if (createSuccess === OK || createSuccess === ERR_BUSY) {
-                            return;
-                        }
-                    }
+        Memory.replenishNextTick = false;
+        
+        for (let spawn of Object.values(Game.spawns)) {  
+            for (let roleName of rolePriority) {
+                let role = roleConfig[roleName];
+                if (!availableCreeps[role.role] || availableCreeps[role.role] < role.numToHave) {
+                    let createSuccess = this.createCreep(spawn, role);
+                    if (createSuccess === OK) {
+                        //We made a creep successfully, we may need more try again next tick...
+                        Memory.replenishNextTick = true;
+                        break;
+                    } 
                 }
-            })();
+            }
         }
     }
     

@@ -7,6 +7,9 @@ const flatten = require("gulp-flatten");
 const gulpScreeps = require("gulp-screeps");
 const eslint = require("gulp-eslint");
 
+const minimist = require("minimist");
+const args = minimist(process.argv.slice(2));
+
 let credentials;
 try {
     credentials = require("./credentials.json");
@@ -51,10 +54,9 @@ function screeps(cb) {
 
     const options = {
         token: credentials.apiKey,
-        branch: "default",
+        branch: args.branch || "default",
         ptr: false
     };
-    //src("src/**/*.js").pipe(flatten()).pipe(dest("dist/")).pipe(gulpScreeps(options));
     return src("dist/*.js").pipe(gulpScreeps(options));
 };
 
