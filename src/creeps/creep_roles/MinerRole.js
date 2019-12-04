@@ -40,6 +40,7 @@ module.exports = class MinerRole extends BaseRole {
             if (creep.pos.x === container.pos.x && creep.pos.y === container.pos.y) {
                 if (!creep.memory.energySourceId) {
                     //The closest energy should be right next to this container if we can drop mine it.
+                    //This needs to also handle FIND_MINERALS
                     let source = creep.pos.findClosestByPath(FIND_SOURCES);
                     let testHarvest = creep.harvest(source);
                     if (testHarvest === OK) {
@@ -50,6 +51,7 @@ module.exports = class MinerRole extends BaseRole {
                         delete creep.memory.mineTarget;
                     } else {
                         //Something else went wrong
+                        Memory.usedContainers[container.id] = false;
                         delete creep.memory.mineTarget;
                     }
                 } else {

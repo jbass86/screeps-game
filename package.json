@@ -21,7 +21,7 @@
   "homepage": "https://github.com/jbass86/screeps-game#readme",
   "devDependencies": {
     "@types/lodash": "^4.14.146",
-    "@types/screeps": "^2.5.5",
+    "@types/screeps": "^3.0.0",
     "del": "^5.1.0",
     "eslint-plugin-screeps": "^2.0.0",
     "gulp": "^4.0.2",

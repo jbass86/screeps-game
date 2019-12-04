@@ -1,6 +1,5 @@
 "use strict";
 
-//explorer? defender? 
 const roleConfig = {
     "miner": {
         name: "Miner", 
@@ -60,7 +59,7 @@ const roleConfig = {
     },
 };
 
-const rolePriority = [ "harvester", "miner",  "linker", "transporter", "upgrader", "builder", "maintainer", "wallguy"];
+const rolePriority = ["harvester", "miner",  "linker", "transporter", "upgrader", "builder", "maintainer", "wallguy"];
 
 module.exports = class CreepManager {
 

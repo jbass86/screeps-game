@@ -217,12 +217,12 @@ module.exports = class BaseRole {
                     if (typeof entry[1] === "string") {
                         const creepLives = Game.creeps[entry[1]];
                         if (!creepLives){
-                            Memory[name][entry[0]] = false;
+                            Memory[name][entry[0]] = null;
                         }
                     } else if (typeof entry[1] === "object") {
                         const creepLives = Game.creeps[entry[1].assignee];
                         if (!creepLives){
-                            Memory[name][entry[0]].assignee = false;
+                            Memory[name][entry[0]].assignee = null;
                         }
                     }
                 } 
