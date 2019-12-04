@@ -1,6 +1,6 @@
 "use strict";
  
-const rolePriority = [ "harvester", "miner",  "linker", "transporter", "upgrader", "builder", "maintainer", "wallguy"];
+const rolePriority = ["harvester", "miner",  "linker", "transporter", "upgrader", "builder", "maintainer", "wallguy"];
 
 const roleConfig = {
     "miner": {
@@ -211,7 +211,6 @@ module.exports = class DynamicCreepConfig {
 
         let numSites = room.find(FIND_CONSTRUCTION_SITES);
         if (numSites && numSites.length > 0) {
-            
             num = Math.min(1, Math.round(numSites.length / 5));
         }
 

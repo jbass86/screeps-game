@@ -5,7 +5,8 @@
 
 global.Friends = {
     "Kpow": {name: "Kpow", status: "closeFriend"},
-    "Nate954": {name: "Nate954", status: "closeFriend"}
+    "Nate954": {name: "Nate954", status: "closeFriend"},
+    "Riouxthless": {name: "Riouxthless", status: "closeFriend"}
 };
 
 const CreepHandler = require("CreepHandler");

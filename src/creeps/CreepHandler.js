@@ -1,6 +1,6 @@
 "use strict";
 
-const CreepManager = require("NewCreepManager");
+const CreepManager = require("CreepManager");
 const manager = new CreepManager();
 
 const HarvesterRole = require("HarvesterRole");
@@ -40,7 +40,7 @@ module.exports = class CreepHandler {
     constructor() {}
 
     handleCreepManagement() {
-        if (Game.time % 60 === 0 || Memory.replenishNextTick){
+        if (Game.time % 60 === 0 && !Memory.stopAutoSpawn){
             manager.cullCreepMemory();
             manager.replenishCreeps();
         }
