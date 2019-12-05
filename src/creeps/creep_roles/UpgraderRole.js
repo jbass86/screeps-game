@@ -22,13 +22,13 @@ module.exports = class UpgraderRole extends BaseRole {
 
             if(upgradeSuccess == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
-            } else if (upgradeSuccess === OK) {
+            } else {
+
                 if (creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0) {
                     creep.memory.upgrading = false;
                 }
-            } else {
                 console.log(`${creep.name} upgrade error ${upgradeSuccess}`);
-            }           
+            }        
         }
         
         return true;
