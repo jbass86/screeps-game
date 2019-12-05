@@ -23,7 +23,7 @@ module.exports = class UpgraderRole extends BaseRole {
             if(upgradeSuccess == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
             } else if (upgradeSuccess === OK) {
-                if (creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
+                if (creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0) {
                     creep.memory.upgrading = false;
                 }
             } else {
