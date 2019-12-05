@@ -18,7 +18,7 @@ module.exports = class MinerRole extends BaseRole {
 
     run (creep) {
         
-        Game.time % 10 === 0 ? this.cullStructureMap("usedContainers"): null;
+        Game.time % 10 === 0 ? this.cullStructureMap("usedContainers") : null;
 
         if (!creep.memory.mineTarget) {
             let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {

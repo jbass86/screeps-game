@@ -4,6 +4,9 @@
 
 const BaseRole = require("BaseRole");
 
+if (!Memory.claimedTransfers) {
+    Memory.claimedTransfers = {};
+}
 
 module.exports = class HarvesterRole extends BaseRole {
 
@@ -13,6 +16,8 @@ module.exports = class HarvesterRole extends BaseRole {
 
     run (creep) {
         
+        Game.time % 10 === 0 ? this.cullStructureMap("claimedTransfers") : null;
+
         if (creep.memory.returnHarvest) {
             
             if (!creep.memory.transferTarget) {
@@ -21,7 +26,8 @@ module.exports = class HarvesterRole extends BaseRole {
                         return (structure.structureType === STRUCTURE_EXTENSION ||
                             structure.structureType === STRUCTURE_SPAWN ||
                             structure.structureType === STRUCTURE_TOWER) &&
-                            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
+                            !Memory.claimedTransfers[structure.id];
                     }
                 });
                 
@@ -45,6 +51,10 @@ module.exports = class HarvesterRole extends BaseRole {
                         
                     return aScore - bScore;
                 });
+
+                if (creep.store.getUsedCapacity(RESOURCE_ENERGY) > targets[0].store.getFreeCapacity(RESOURCE_ENERGY)) {
+                    Memory.claimedTransfers[targets[0].id] = creep.name;
+                }
                 creep.memory.transferTarget = targets[0].id;
             } 
             
@@ -53,7 +63,7 @@ module.exports = class HarvesterRole extends BaseRole {
             if (transferSuccess === OK) {
 
                 creep.say("😀");
-                delete creep.memory.transferTarget;             
+                this.cleanupTransferTarget(creep);         
                 if (creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0) {
                     //I'm all out of energy so I need to get more...
                     creep.memory.returnHarvest = false;
@@ -66,7 +76,7 @@ module.exports = class HarvesterRole extends BaseRole {
                     creep.memory.returnHarvest = false;
                 } else {
                     console.log(creep.name + ": UnExpected Harvester Error " + transferSuccess);
-                    delete creep.memory.transferTarget;
+                    this.cleanupTransferTarget(creep);
                 }
             }
         } else {
@@ -77,5 +87,10 @@ module.exports = class HarvesterRole extends BaseRole {
             }
         }     
         return true;
+    }
+
+    cleanupTransferTarget(creep) {
+        delete Memory.claimedTransfers[creep.memory.transferTarget];
+        delete creep.memory.transferTarget;
     }
 };
