@@ -1,6 +1,6 @@
 "use strict";
  
-const rolePriority = ["harvester", "miner",  "linker", "transporter", "upgrader", "builder", "maintainer", "wallguy"];
+const rolePriority = ["attacker", "harvester", "miner",  "linker", "transporter", "builder", "maintainer", "upgrader", "wallguy"];
 
 const roleConfig = {
     "miner": {
@@ -52,6 +52,13 @@ const roleConfig = {
         role: ["wallguy", "upgrader"], 
         baseParts: [WORK, CARRY, MOVE],
         segment: [WORK, CARRY, MOVE]
+    },
+    "attacker": {
+        name: "MurderMan", 
+        role: "attacker", 
+        baseParts: [MOVE, ATTACK, TOUGH],
+        segment: [MOVE, ATTACK, TOUGH],
+        maxSegments: 3
     }
 };
 
@@ -96,6 +103,8 @@ module.exports = class DynamicCreepConfig {
                 numToHave = this._getNumWallGuys(room);
             } else if (roleName === "builder") {
                 numToHave = this._getNumBuilders(room);
+            } else if (roleName === "attacker") {
+                numToHave = this._getNumAttackers(room);
             }
         }
         return numToHave;
@@ -212,6 +221,23 @@ module.exports = class DynamicCreepConfig {
         let numSites = room.find(FIND_CONSTRUCTION_SITES);
         if (numSites && numSites.length > 0) {
             num = Math.min(1, Math.round(numSites.length / 5));
+        }
+
+        return num;
+    }
+
+    _getNumAttackers(room) {
+
+        let num = 0;
+
+        let flags = (Object.values(Game.flags));
+
+        for (let flag of flags) {
+            let flagParts = flag.name.split("_");
+            if (flagParts && flagParts.length === 3 && flagParts[2] === room.name) {
+                num = flagParts[1];
+                break;
+            }   
         }
 
         return num;

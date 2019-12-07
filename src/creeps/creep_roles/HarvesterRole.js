@@ -74,6 +74,9 @@ module.exports = class HarvesterRole extends BaseRole {
                 } else if (transferSuccess === ERR_NOT_ENOUGH_ENERGY) {
                     //partial transfer
                     creep.memory.returnHarvest = false;
+                } else if (transferSuccess === ERR_FULL) {
+                    creep.say("🤢");
+                    this.cleanupTransferTarget(creep);
                 } else {
                     console.log(creep.name + ": UnExpected Harvester Error " + transferSuccess);
                     this.cleanupTransferTarget(creep);

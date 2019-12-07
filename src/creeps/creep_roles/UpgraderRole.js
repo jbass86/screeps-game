@@ -20,15 +20,17 @@ module.exports = class UpgraderRole extends BaseRole {
 
             let upgradeSuccess = creep.upgradeController(creep.room.controller);
 
-            if(upgradeSuccess == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
-            } else {
+            if (upgradeSuccess !== OK){
+                if(upgradeSuccess === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
+                } else {
 
-                if (creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0) {
-                    creep.memory.upgrading = false;
-                }
-                console.log(`${creep.name} upgrade error ${upgradeSuccess}`);
-            }        
+                    if (creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0) {
+                        creep.memory.upgrading = false;
+                    }
+                    console.log(`${creep.name} upgrade error ${upgradeSuccess}`);
+                }  
+            }      
         }
         
         return true;

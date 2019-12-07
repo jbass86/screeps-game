@@ -24,6 +24,9 @@ const transporter = new TransporterRole();
 const LinkerRole = require("LinkerRole");
 const linker = new LinkerRole();
 
+const AttackerRole = require("AttackerRole");
+const attacker = new AttackerRole();
+
 const roleMap = {
     "harvester": harvester,
     "upgrader": upgrader,
@@ -32,7 +35,8 @@ const roleMap = {
     "wallguy": maintainer,
     "miner": miner,
     "transporter": transporter,
-    "linker": linker
+    "linker": linker,
+    "attacker": attacker
 };
 
 module.exports = class CreepHandler {
@@ -52,7 +56,7 @@ module.exports = class CreepHandler {
         for (let creep of Object.values(Game.creeps)) {
             if (creep.my && !creep.spawning){
                 
-                const roleAttr = creep.memory.primaryRole || creep.memory.role;
+                const roleAttr = creep.memory.role;
                
                 if (roleAttr) {
                     
