@@ -194,7 +194,7 @@ module.exports = class DynamicCreepConfig {
 
         if (room.controller.level >= 2) {
             let structures = room.find(FIND_STRUCTURES);
-            num = Math.min(1, Math.round(structures.length / 100));
+            num = Math.max(1, Math.round(structures.length / 100));
         }
        
         return num;
@@ -207,7 +207,7 @@ module.exports = class DynamicCreepConfig {
         if (room.controller.level >= 2) {
             let walls = room.find(STRUCTURE_WALL);
             if (walls && walls.length > 1) {
-                num = Math.min(1, Math.round(walls.length / 25));
+                num = Math.max(1, Math.round(walls.length / 25));
             }
         } 
 
@@ -220,7 +220,7 @@ module.exports = class DynamicCreepConfig {
 
         let numSites = room.find(FIND_CONSTRUCTION_SITES);
         if (numSites && numSites.length > 0) {
-            num = Math.min(1, Math.round(numSites.length / 5));
+            num = Math.max(1, Math.round(numSites.length / 5));
         }
 
         return num;
