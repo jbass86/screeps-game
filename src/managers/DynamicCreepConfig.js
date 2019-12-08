@@ -141,8 +141,15 @@ module.exports = class DynamicCreepConfig {
         let num = 0;
 
         if (room.controller.level >= 4) { 
-            //Just a transporter for each miner at this time...
-            num = this._getNumMiners(room);
+
+            //make sure there is a storage in the room...
+            let storage = room.find(FIND_STRUCTURES, {filter: (struct) => struct.structureType === STRUCTURE_STORAGE});
+
+            if (storage && storage.length >= 1) {
+                //Just a transporter for each miner at this time...
+                num = this._getNumMiners(room);
+            }
+           
         }
         return num;
     }
