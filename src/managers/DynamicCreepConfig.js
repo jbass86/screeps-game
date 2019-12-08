@@ -193,7 +193,9 @@ module.exports = class DynamicCreepConfig {
         let num = 0;
 
         if (room.controller.level >= 2) {
-            let structures = room.find(FIND_STRUCTURES);
+            let structures = room.find(FIND_STRUCTURES, {
+                filter: (struct) => struct.structureType !== STRUCTURE_WALL
+            });
             num = Math.max(1, Math.round(structures.length / 100));
         }
        
@@ -205,9 +207,11 @@ module.exports = class DynamicCreepConfig {
         let num = 0;
 
         if (room.controller.level >= 2) {
-            let walls = room.find(STRUCTURE_WALL);
-            if (walls && walls.length > 1) {
-                num = Math.max(1, Math.round(walls.length / 25));
+            let walls = room.find(FIND_STRUCTURES, {
+                filter: (struct) => struct.structureType === STRUCTURE_WALL
+            });
+            if (walls && walls.length >= 1) {
+                num = Math.max(1, Math.round(walls.length / 10));
             }
         } 
 
