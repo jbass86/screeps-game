@@ -66,8 +66,8 @@ module.exports = class BaseRole {
                     if (!resource) {
                         //what to take wasnt specified so take anything thats in there...
                         let availResources = Object.keys(target.store);
-                        this.gatherSuccess = availResources && availResources.length >= 1 ? 
-                            creep.withdraw(availResources[0]) : ERR_INVALID_TARGET;
+                        gatherSuccess = availResources && availResources.length >= 1 ? 
+                            creep.withdraw(target, availResources[0]) : ERR_INVALID_TARGET;
                     } else {
                         gatherSuccess = creep.withdraw(target, resource);
                     }
