@@ -11,7 +11,7 @@ module.exports = class UpgraderRole extends BaseRole {
     run(creep) {
         
         if (!creep.memory.upgrading) {
-            let gatherResult = this.gather(creep);
+            let gatherResult = this.gather(creep, RESOURCE_ENERGY);
             if (!gatherResult) {
                 //Energy is full so start upgrading...
                 creep.memory.upgrading = true;

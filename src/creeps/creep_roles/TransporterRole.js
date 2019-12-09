@@ -6,6 +6,7 @@ const BaseRole = require("BaseRole");
 
 const gatherPriority = [
     {name: "ground", style: "closest"}, 
+    {name: "tombstone", style: "closest"}, 
     {name: "container", style: "most"}
 ];
 
@@ -17,7 +18,7 @@ module.exports = class TransporterRole extends BaseRole {
 
     run (creep) {
         
-        if (!this.gather(creep, RESOURCE_ENERGY, gatherPriority)) {
+        if (!this.gather(creep, null, gatherPriority)) {
 
             if (!creep.memory.transportTarget) {
                 const storage = creep.room.find(FIND_STRUCTURES, {

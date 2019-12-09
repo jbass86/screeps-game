@@ -82,7 +82,7 @@ module.exports = class MaintainerRole extends BaseRole {
             }
 
         } else {
-            if (!this.gather(creep)) {
+            if (!this.gather(creep, RESOURCE_ENERGY)) {
                 creep.memory.canRepair = true;
             }
         }

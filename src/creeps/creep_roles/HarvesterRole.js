@@ -83,7 +83,7 @@ module.exports = class HarvesterRole extends BaseRole {
                 }
             }
         } else {
-            const gatherResult = this.gather(creep);
+            const gatherResult = this.gather(creep, RESOURCE_ENERGY);
             if (!gatherResult) {
                 //Were full of energy to dump off some harvest
                 creep.memory.returnHarvest = true;

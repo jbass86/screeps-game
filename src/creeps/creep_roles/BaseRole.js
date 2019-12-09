@@ -20,8 +20,6 @@ const defaultPriority = [
 if (!Memory.claimedPickups) {
     Memory.claimedPickups = {};
 }
-//TODO create claimedPickups {} and if a creep is going to scoop up all of a resource then do not let
-//any other creeps try to go after it on the same tick...
 
 module.exports = class BaseRole {
 
@@ -30,14 +28,13 @@ module.exports = class BaseRole {
     /**
      * Gather Energy for a creep from some available source.
      * @param {*} creep The creep to work on
-     * @param {*} resource The resource to gather (default: Energy)
+     * @param {*} resource The resource to gather, undefined or null assumes gather anything...
      * @param {*} priority An array of object for the gather priority (Will default to defaultPriority)
      */
     gather(creep, resource, priority) {
 
         Game.time % 30 === 0 ? this.cullStructureMap("claimedPickups") : null;
 
-        let resourceType = resource || RESOURCE_ENERGY;
         let priorityList = priority || defaultPriority;
         
         if(creep.store.getFreeCapacity(resourceType) > 0) {
@@ -112,6 +109,22 @@ module.exports = class BaseRole {
      */
     findTarget(creep, resource, style, data) {
 
+        const itemFilter = (item) => {
+            let filter = true;
+            if (resource) {
+                filter &= item.resourceType === resource;
+            }
+            return filter && !Memory.claimedPickups[item.id];    
+        };
+
+        const structFilter = (struct) => {
+            let filter = true;
+            if (data.id) {
+                filter &= struct.structureType === data.id;
+            }
+            return filter && struct.store.getUsedCapacity(resource) > 0 && !Memory.claimedPickups[struct.id];
+        };
+
         let target = null;
 
         if (style === "closest") {
@@ -119,23 +132,15 @@ module.exports = class BaseRole {
             if (data.type === "item") {
 
                 if (data.name === "ground") {
-                    target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-                        filter: (item) => item.resourceType === resource && !Memory.claimedPickups[item.id]
-                    });
+                    target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: itemFilter});
                 }          
             } else if (data.type === "structure") {
                 if (data.name === "tombstone") {
-                    target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-                        filter: (item) => item.resourceType === resource && !Memory.claimedPickups[item.id]
-                    });
+                    target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: structFilter});
                 } else {
-                    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                        filter: (struct) => struct.structureType === data.id && 
-                        struct.store.getUsedCapacity(resource) > 0 && !Memory.claimedPickups[struct.id]
-                    });
-                }     
-               
-            } else if (data.type === "node") {
+                    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: structFilter});
+                }                
+            } else if (data.type === "node" && resource === RESOURCE_ENERGY) {
                 target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
             }
            
@@ -144,38 +149,20 @@ module.exports = class BaseRole {
             if (data.type === "item") {
 
                 if (data.name === "ground") {
-                    const targets = target = creep.room.find(FIND_DROPPED_RESOURCES, {
-                        filter: (item) => item.resourceType === resource && !Memory.claimedPickups[item.id]
-                    });
-    
-                    if (targets && targets.length > 0) {
-                        targets.sort((a, b) => b.amount - a.amount);
-                        target = targets[0];
-                    }
+                    const targets = target = creep.room.find(FIND_DROPPED_RESOURCES, {filter: itemFilter});
+                    target = this.findLargestTarget(targets, resource, data.type);
                 } 
                 
             } else if (data.type === "structure") {
                 if (data.name === "tombstone") {
-                    const targets = target = creep.room.find(FIND_TOMBSTONES, {
-                        filter: (item) => item.resourceType === resource && !Memory.claimedPickups[item.id]
-                    });
-    
-                    if (targets && targets.length > 0) {
-                        targets.sort((a, b) => b.store.getUsedCapacity(resource) - a.store.getUsedCapacity(resource));
-                        target = targets[0];
-                    }
+                    const targets = target = creep.room.find(FIND_TOMBSTONES, {filter: structFilter});
+                    target = this.findLargestTarget(targets, resource, data.type);
                 } else {
-                    const targets = creep.room.find(FIND_STRUCTURES, {
-                        filter: (struct) => struct.structureType === data.id && 
-                            struct.store.getUsedCapacity(resource) > 0 && !Memory.claimedPickups[struct.id]
-                    });
-                    if (targets && targets.length > 0) {
-                        targets.sort((a, b) => b.store.getUsedCapacity(resource) - a.store.getUsedCapacity(resource));
-                        target = targets[0];
-                    }
+                    const targets = creep.room.find(FIND_STRUCTURES, {filter: structFilter});
+                    target = this.findLargestTarget(targets, resource, data.type);
                 }   
-            } else if (data.type === "node") {
-                //This needs to support minerals and Deposits still....
+            } else if (data.type === "node" && resource === RESOURCE_ENERGY) {
+             
                 const targets = creep.room.find(FIND_SOURCES_ACTIVE);
                 if (targets && targets.length > 0) {
                     targets.sort((a, b) => b.energy - a.energy);
@@ -235,5 +222,20 @@ module.exports = class BaseRole {
             delete Memory.claimedPickups[creep.memory.gatherTarget.id];
             delete creep.memory.gatherTarget;
         }
+    }
+
+    findLargestTarget(targets, resource, type) {
+        let ret = null;
+        if (targets && targets.length > 0) {
+            targets.sort((a, b) => {
+                if (type === "item") {
+                    return b.amount - a.amount;
+                } else if (type === "structure") {
+                    return b.store.getUsedCapacity(resource) - a.store.getUsedCapacity(resource);
+                }  
+            });
+            ret = targets[0];
+        }
+        return ret;
     }
 };
