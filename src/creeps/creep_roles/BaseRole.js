@@ -37,12 +37,12 @@ module.exports = class BaseRole {
 
         let priorityList = priority || defaultPriority;
         
-        if(creep.store.getFreeCapacity(resourceType) > 0) {
+        if(creep.store.getFreeCapacity(resource) > 0) {
     
             if (!creep.memory.gatherTarget) {
                 for (let gatherType of priorityList) {
                     if (gatherTypes[gatherType.name]) {
-                        const target = this.findTarget(creep, resourceType, gatherType.style, gatherTypes[gatherType.name]);
+                        const target = this.findTarget(creep, resource, gatherType.style, gatherTypes[gatherType.name]);
                         if (target) {
                             creep.memory.gatherTarget = {
                                 id: target.id, 
@@ -57,18 +57,24 @@ module.exports = class BaseRole {
             
             if (creep.memory.gatherTarget) {
 
-                const target = Game.getObjectById(creep.memory.gatherTarget.id);
-                
+                const target = Game.getObjectById(creep.memory.gatherTarget.id);        
                 let gatherSuccess;
                 
                 if (creep.memory.gatherTarget.type === "item") {
                     gatherSuccess = creep.pickup(target);
                 } else if (creep.memory.gatherTarget.type === "structure") {
-                    gatherSuccess = creep.withdraw(target, resourceType);
+                    if (!resource) {
+                        //what to take wasnt specified so take anything thats in there...
+                        let availResources = Object.keys(target.store);
+                        this.gatherSuccess = availResources && availResources.length >= 1 ? 
+                            creep.withdraw(availResources[0]) : ERR_INVALID_TARGET;
+                    } else {
+                        gatherSuccess = creep.withdraw(target, resource);
+                    }
+                   
                 } else if (creep.memory.gatherTarget.type === "node") {
                     gatherSuccess = creep.harvest(target);
-                }
-                
+                }            
                 
                 if (gatherSuccess !== OK) {
                     creep.memory.gatherTarget.elapsedTicks++;
