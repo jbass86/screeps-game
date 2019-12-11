@@ -2,8 +2,6 @@
 
 "use strict";
 
-//Harvester Roule
-
 const BaseRole = require("BaseRole");
 
 if (!Memory.usedContainers) {
@@ -35,29 +33,36 @@ module.exports = class MinerRole extends BaseRole {
                 return false;
             }
         } else {
+
             let container = Game.getObjectById(creep.memory.mineTarget.containerId);
 
             if (creep.pos.x === container.pos.x && creep.pos.y === container.pos.y) {
-                if (!creep.memory.energySourceId) {
-                    //The closest energy should be right next to this container if we can drop mine it.
-                    //This needs to also handle FIND_MINERALS
-                    let source = creep.pos.findClosestByPath(FIND_SOURCES);
-                    let testHarvest = creep.harvest(source);
-                    if (testHarvest === OK) {
-                        creep.memory.mineTarget.energySourceId = source.id;
-                    } else if (testHarvest === ERR_NOT_IN_RANGE) {
-                        //The closest source isnt withing distance to drop mind this container, we cant drop mine from it...
+
+                if (!creep.memory.mineTarget.harvestSourceId) {
+
+                    //The closest harvestable source should be right next to this container if we can drop mine it.             
+                    let source = creep.pos.findInRange(FIND_SOURCES, 1);
+                    if (!source) {
+                        source = creep.pos.findInRange(FIND_MINERALS, 1);
+                    }
+
+                    if (source) {
+                        creep.memory.mineTarget.harvestSourceId = source.id;
+                    } else {
+                        //The closest source isnt within distance to drop mine this container, we cant drop mine from it...
                         Memory.usedContainers[container.id] = "INVALID";
                         delete creep.memory.mineTarget;
-                    } else {
-                        //Something else went wrong
-                        Memory.usedContainers[container.id] = false;
-                        delete creep.memory.mineTarget;
                     }
-                } else {
-                    let source = Game.getObjectById(creep.memory.mineTarget.energySourceId);
-                    creep.harvest(source);
                 }
+
+                if (creep.memory.mineTarget && creep.memory.mineTarget.harvestSourceId) {
+                    let source = Game.getObjectById(creep.memory.mineTarget.harvestSourceId);
+                    let success = creep.harvest(source);
+                    if (success !== OK) {
+                        console.log(`${creep.name} mining error ${success}`);
+                    }
+                }
+
             } else {
                 creep.moveTo(container);
             }

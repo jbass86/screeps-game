@@ -1,20 +1,21 @@
 "use strict";
  
-const rolePriority = ["attacker", "harvester", "miner",  "linker", "transporter", "builder", "maintainer", "upgrader", "wallguy"];
+const rolePriority = ["attacker",  "miner", "harvester", "linker", "transporter", "builder", "maintainer", "upgrader", "wallguy"];
 
 const roleConfig = {
     "miner": {
         name: "Miner", 
         role: "miner", 
-        baseParts: [MOVE, WORK],
+        baseParts: [MOVE, WORK, WORK],
         segment: [WORK],
-        maxSegments: 4
+        maxSegments: 3
     },
     "transporter": {
         name: "Transporter", 
         role: ["transporter", "harvester", "upgrader"], 
-        baseParts: [WORK, CARRY, MOVE], 
-        segment: [WORK, CARRY, MOVE],
+        baseParts: [CARRY, MOVE, WORK], 
+        segment: [CARRY, MOVE],
+        maxSegments: 4
     },
     "linker": {
         name: "LinkDude", 
@@ -129,7 +130,14 @@ module.exports = class DynamicCreepConfig {
                     let energy = container.pos.findInRange(FIND_SOURCES, 1);
                     if (energy && energy.length >= 1) {
                         num++;
+                    } else {
+                        //no energy check for minerals
+                        let mineral = container.pos.findInRange(FIND_MINERALS, 1);
+                        if (mineral && mineral.length >= 1) {
+                            num++;
+                        }
                     }
+
                 }
             }
         }

@@ -18,7 +18,12 @@ module.exports = class TransporterRole extends BaseRole {
 
     run (creep) {
         
-        if (!this.gather(creep, null, gatherPriority)) {
+        if (!creep.memory.transporting) {
+            let gather = this.gather(creep, null, gatherPriority);
+            if (!gather) {
+                creep.memory.transporting = true;
+            }
+        } else {
 
             if (!creep.memory.transportTarget) {
                 const storage = creep.room.find(FIND_STRUCTURES, {
@@ -31,21 +36,35 @@ module.exports = class TransporterRole extends BaseRole {
             }
 
             if (creep.memory.transportTarget) {
-                const storage = Game.getObjectById(creep.memory.transportTarget);
-                let dumpSuccess = creep.transfer(storage, RESOURCE_ENERGY);
-                if (dumpSuccess === OK) {
-                    delete creep.memory.transportTarget;
-                } else if (dumpSuccess === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(storage);
-                } else if (dumpSuccess === ERR_FULL) {
-                    //Storage is full do something else with the energy...
-                    delete creep.memory.transportTarget;
-                    return false;
+
+                if (creep.store.getUsedCapacity() > 0) {
+                    const storage = Game.getObjectById(creep.memory.transportTarget);
+                    let dumpResource = Object.keys(creep.store)[0];
+    
+                    let dumpSuccess = creep.transfer(storage, dumpResource);
+                    if (dumpSuccess === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(storage);
+                    } else if (dumpSuccess === ERR_FULL) {
+                        //Storage is full do something else with the energy...
+                        this.finishedTransporting(creep);
+                        return false;
+                    } else {
+                        console.log(`Unexpected Transport error ${dumpSuccess}`);
+                        this.finishedTransporting(creep);
+                    }
                 } else {
-                    delete creep.memory.transportTarget;
+                    //Nothing to dump...
+                    this.finishedTransporting(creep);
                 }
+              
             }
         }
+
         return true;
+    }
+
+    finishedTransporting(creep) {
+        delete creep.memory.transportTarget;
+        creep.memory.transporting = false;
     }
 };

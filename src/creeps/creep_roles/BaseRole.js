@@ -4,6 +4,7 @@
 const gatherTypes = {
     "ground": {name: "ground", type: "item"},
     "tombstone": {name: "tombstone", type: "structure"},  
+    "ruin": {name: "ruin", type: "structure"},
     "storage": {name: "storage", type: "structure", id: STRUCTURE_STORAGE}, 
     "container": {name: "container", type: "structure", id: STRUCTURE_CONTAINER}, 
     "node": {name: "node", type: "node"}
@@ -57,46 +58,51 @@ module.exports = class BaseRole {
             
             if (creep.memory.gatherTarget) {
 
-                const target = Game.getObjectById(creep.memory.gatherTarget.id);        
-                let gatherSuccess;
+                const target = Game.getObjectById(creep.memory.gatherTarget.id);     
+                if (target) {
+                    let gatherSuccess;
                 
-                if (creep.memory.gatherTarget.type === "item") {
-                    gatherSuccess = creep.pickup(target);
-                } else if (creep.memory.gatherTarget.type === "structure") {
-                    if (!resource) {
-                        //what to take wasnt specified so take anything thats in there...
-                        let availResources = Object.keys(target.store);
-                        gatherSuccess = availResources && availResources.length >= 1 ? 
-                            creep.withdraw(target, availResources[0]) : ERR_INVALID_TARGET;
-                    } else {
-                        gatherSuccess = creep.withdraw(target, resource);
-                    }
-                   
-                } else if (creep.memory.gatherTarget.type === "node") {
-                    gatherSuccess = creep.harvest(target);
-                }            
-                
-                if (gatherSuccess !== OK) {
-                    creep.memory.gatherTarget.elapsedTicks++;
+                    if (creep.memory.gatherTarget.type === "item") {
+                        gatherSuccess = creep.pickup(target);
+                    } else if (creep.memory.gatherTarget.type === "structure") {
+                        if (!resource) {
+                            //what to take wasnt specified so take anything thats in there...
+                            let availResources = Object.keys(target.store);
+                            gatherSuccess = availResources && availResources.length >= 1 ? 
+                                creep.withdraw(target, availResources[0]) : ERR_INVALID_TARGET;
+                        } else {
+                            gatherSuccess = creep.withdraw(target, resource);
+                        }
+                       
+                    } else if (creep.memory.gatherTarget.type === "node") {
+                        gatherSuccess = creep.harvest(target);
+                    }            
                     
-                    if(gatherSuccess === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
-                    } else if (gatherSuccess === ERR_NOT_ENOUGH_RESOURCES || 
-                        gatherSuccess === ERR_INVALID_TARGET) {
-                        //Its empty or invalid find something else...
-                        this.cleanupGatherTarget(creep);
-                        return true;
-                    } else {     
-                        console.log("Unexpected Gather Error " + gatherSuccess);
-                        this.cleanupGatherTarget(creep);
-                        return true;
-                    }
-                    
-                    if (creep.memory.gatherTarget.elapsedTicks > 100) {
-                        creep.say("give up");
-                        this.cleanupGatherTarget(creep);
-                    }
-                } 
+                    if (gatherSuccess !== OK) {
+                        creep.memory.gatherTarget.elapsedTicks++;
+                        
+                        if(gatherSuccess === ERR_NOT_IN_RANGE) {
+                            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
+                        } else if (gatherSuccess === ERR_NOT_ENOUGH_RESOURCES || 
+                            gatherSuccess === ERR_INVALID_TARGET) {
+                            //Its empty or invalid find something else...
+                            this.cleanupGatherTarget(creep);
+                            return true;
+                        } else {     
+                            console.log("Unexpected Gather Error " + gatherSuccess);
+                            this.cleanupGatherTarget(creep);
+                            return true;
+                        }
+                        
+                        if (creep.memory.gatherTarget.elapsedTicks > 100) {
+                            creep.say("give up");
+                            this.cleanupGatherTarget(creep);
+                        }
+                    } 
+                } else {
+                    this.cleanupGatherTarget(creep);
+                }   
+               
             }
 
             return true;
@@ -141,8 +147,9 @@ module.exports = class BaseRole {
                     target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: itemFilter});
                 }          
             } else if (data.type === "structure") {
-                if (data.name === "tombstone") {
-                    target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: structFilter});
+                if (data.name === "tombstone" || data.name === "ruin") {
+                    let search = data.name === "tombstone" ? FIND_TOMBSTONES : FIND_RUINS;
+                    target = creep.pos.findClosestByPath(search, {filter: structFilter});
                 } else {
                     target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: structFilter});
                 }                
@@ -160,8 +167,9 @@ module.exports = class BaseRole {
                 } 
                 
             } else if (data.type === "structure") {
-                if (data.name === "tombstone") {
-                    const targets = target = creep.room.find(FIND_TOMBSTONES, {filter: structFilter});
+                if (data.name === "tombstone" || data.name === "ruin") {
+                    let search = data.name === "tombstone" ? FIND_TOMBSTONES : FIND_RUINS;
+                    const targets = target = creep.room.find(search, {filter: structFilter});
                     target = this.findLargestTarget(targets, resource, data.type);
                 } else {
                     const targets = creep.room.find(FIND_STRUCTURES, {filter: structFilter});
