@@ -42,15 +42,17 @@ module.exports = class TransporterRole extends BaseRole {
                     let dumpResource = Object.keys(creep.store)[0];
     
                     let dumpSuccess = creep.transfer(storage, dumpResource);
-                    if (dumpSuccess === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(storage);
-                    } else if (dumpSuccess === ERR_FULL) {
-                        //Storage is full do something else with the energy...
-                        this.finishedTransporting(creep);
-                        return false;
-                    } else {
-                        console.log(`Unexpected Transport error ${dumpSuccess}`);
-                        this.finishedTransporting(creep);
+                    if (dumpSuccess !== OK) {
+                        if (dumpSuccess === ERR_NOT_IN_RANGE) {
+                            creep.moveTo(storage);
+                        } else if (dumpSuccess === ERR_FULL) {
+                            //Storage is full do something else with the energy...
+                            this.finishedTransporting(creep);
+                            return false;
+                        } else {
+                            console.log(`Unexpected Transport error ${dumpSuccess}`);
+                            this.finishedTransporting(creep);
+                        }
                     }
                 } else {
                     //Nothing to dump...
