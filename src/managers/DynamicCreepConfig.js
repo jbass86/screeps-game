@@ -134,7 +134,11 @@ module.exports = class DynamicCreepConfig {
                         //no energy check for minerals
                         let mineral = container.pos.findInRange(FIND_MINERALS, 1);
                         if (mineral && mineral.length >= 1) {
-                            num++;
+                            //Found a mineral but lets see if theres an extractor on it...
+                            let structsAt = mineral[0].pos.lookFor(LOOK_STRUCTURES);
+                            if (structsAt.filter((struct) => struct.structureType === STRUCTURE_EXTRACTOR).length > 0) {
+                                num++;
+                            }
                         }
                     }
 

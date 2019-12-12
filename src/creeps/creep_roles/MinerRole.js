@@ -42,12 +42,12 @@ module.exports = class MinerRole extends BaseRole {
 
                     //The closest harvestable source should be right next to this container if we can drop mine it.             
                     let source = creep.pos.findInRange(FIND_SOURCES, 1);
-                    if (!source) {
+                    if (!source || source.length === 0) {
                         source = creep.pos.findInRange(FIND_MINERALS, 1);
                     }
 
-                    if (source) {
-                        creep.memory.mineTarget.harvestSourceId = source.id;
+                    if (source && source.length >= 1) {
+                        creep.memory.mineTarget.harvestSourceId = source[0].id;
                     } else {
                         //The closest source isnt within distance to drop mine this container, we cant drop mine from it...
                         Memory.usedContainers[container.id] = "INVALID";
@@ -59,7 +59,13 @@ module.exports = class MinerRole extends BaseRole {
                     let source = Game.getObjectById(creep.memory.mineTarget.harvestSourceId);
                     let success = creep.harvest(source);
                     if (success !== OK) {
-                        console.log(`${creep.name} mining error ${success}`);
+                     
+                        if (success === ERR_TIRED) {
+                            creep.say("😓");
+                        } else {
+                            console.log(`${creep.name} mining error ${success}`);
+                        }
+                        
                     }
                 }
 
