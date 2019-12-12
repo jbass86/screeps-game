@@ -192,7 +192,7 @@ module.exports = class DynamicCreepConfig {
                 num = energySources.length * 2;
             } 
         } else {
-            Math.max(Math.round(this._getNumTransporters(room) / 2), 1);
+            num = Math.max(Math.round(this._getNumTransporters(room) / 2), 2);
         }
 
         return num;
