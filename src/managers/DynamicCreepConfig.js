@@ -192,8 +192,7 @@ module.exports = class DynamicCreepConfig {
                 num = energySources.length * 2;
             } 
         } else {
-            //Placeholder... its what I currently have..
-            num = 4;
+            Math.max(Math.round(this._getNumTransporters(room) / 2), 1);
         }
 
         return num;
@@ -243,7 +242,7 @@ module.exports = class DynamicCreepConfig {
 
         let numSites = room.find(FIND_CONSTRUCTION_SITES);
         if (numSites && numSites.length > 0) {
-            num = Math.max(1, Math.round(numSites.length / 5));
+            num = Math.max(2, Math.round(numSites.length / 5));
         }
 
         return num;
